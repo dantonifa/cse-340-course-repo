@@ -21,19 +21,33 @@ app.set("views", path.join(__dirname, "views"));
 
 // Serve static files like CSS and images from the public folder
 app.use(express.static(path.join(__dirname, "public")));
-// Home Route - Renders index.ejs
+/* ***********************
+ * Routes with Dynamic Titles
+ * *********************** */
+
+// Home Route
 app.get("/", (req, res) => {
-  res.render("index");
+  res.render("index", { title: "Home" });
 });
 
-// Organizations Route - Renders organizations.ejs
+// Organizations Route
 app.get("/organizations", (req, res) => {
-  res.render("organizations");
+  res.render("organizations", { title: "Organizations" });
 });
 
-// Services Route - Renders services.ejs
+// Services Route
 app.get("/services", (req, res) => {
-  res.render("services");
+  res.render("services", { title: "Services" });
+});
+
+// Projects Route
+app.get("/projects", (req, res) => {
+  res.render("projects", { title: "Projects" });
+});
+
+// Categories Route
+app.get("/categories", (req, res) => {
+  res.render("categories", { title: "Categories" });
 });
 
 // Start the server listener
