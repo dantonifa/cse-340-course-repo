@@ -82,11 +82,13 @@
     justify-content: space-between;
 }
 
-/* Make images responsive and fit their cards perfectly */
+/* Forces all project images to share identical height dimensions without distorting */
 .projects-list img {
     width: 100%;
-    height: auto;
+    height: 250px;
+    object-fit: cover;
     border-radius: 4px;
-    margin-top: 10px;
+    margin-top: auto; /* Aligns and anchors the image perfectly to the bottom of the card container */
 }
+
 
