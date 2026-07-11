@@ -35,7 +35,7 @@ app.get("/", (req, res) => {
 app.get("/organizations", async (req, res) => {
   try {
     // Querying all records from the organizations table
-    const result = await pool.query(
+    const result = await db.query(
       "SELECT * FROM organizations ORDER BY organization_id ASC",
     );
 
