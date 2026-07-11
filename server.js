@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import db from "./models/db.js";
+import { getAllOrganizations } from "./models/organizations.js";
 
 // Load environment variables from your .env file
 dotenv.config();
@@ -32,22 +33,15 @@ app.get("/", (req, res) => {
 });
 
 // Organizations Route (Dynamic with Database Fetch)
+// Organizations Route (Dynamic with Database Fetch)
 app.get("/organizations", async (req, res) => {
-  try {
-    // Querying all records from the organizations table
-    const result = await db.query(
-      "SELECT * FROM organizations ORDER BY organization_id ASC",
-    );
+  // Fetch all records using the model function
+  const organizations = await getAllOrganizations();
+  console.log(organizations);
 
-    // Passing the rows along with the page title to the EJS view
-    res.render("organizations", {
-      title: "Organizations",
-      organizations: result.rows,
-    });
-  } catch (error) {
-    console.error("Error fetching organizations:", error);
-    res.status(500).send("Server Error: Unable to fetch data.");
-  }
+  const title = "Our Partner Organizations";
+  // Pass both the title and the database results to the EJS template
+  res.render("organizations", { title, organizations });
 });
 
 // Services Route

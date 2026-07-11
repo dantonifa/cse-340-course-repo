@@ -1,31 +1,24 @@
 <%- include('partials/header') %>
-
-<!-- Main Organizations Content -->
-<h2>Our Partner Organizations & Academic Events</h2>
-<p>Discover the institutions, graduation milestones, and civic achievements that shape our educational ecosystem.</p>
-
-<!-- Organizations Section Container -->
-<div class="organizations-container">
+<main>
+    <h1><%= title %></h1>
+    <p>Here are a few of our partner organizations:</p>
     
-<% if (organizations && organizations.length > 0) { %>
-    <% organizations.forEach(function(org) { %>
-        <!-- Dynamic Organization Card -->
-        <div class="org-card">
-            <img src="/images/<%= org.logo_filename %>" alt="<%= org.name %>">
-            <div class="org-text">
-                <h3><%= org.name %></h3>
-                <p><%= org.description %></p>
-            </div>
-        </div>
-    <% }); %>
-<% } else { %>
-    <p>No organizations found.</p>
-<% } %>
-</div>
+    <div class="organizations-container">
+        <% if (organizations && organizations.length > 0) { %>
+            <% organizations.forEach(organization => { %>
+                <div class="org-card">
+                    <!-- Dynamic Image Location -->
+                    <img src="/images/<%= organization.logo_filename %>" alt="<%= organization.name %> Logo">
 
-<%- include('partials/footer') %>
-
-
-</div>
-
+                    <!-- Dynamic Name and Info -->
+                    <h2><%= organization.name %></h2>
+                    <p><%= organization.description %></p>
+                    <p><strong>Contact:</strong> <a href="mailto:<%= organization.contact_email %>"><%= organization.contact_email %></a></p>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p>No organizations found.</p>
+        <% } %>
+    </div>
+</main>
 <%- include('partials/footer') %>

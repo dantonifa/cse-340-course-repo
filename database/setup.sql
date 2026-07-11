@@ -1,4 +1,5 @@
 -- 1. Create the table
+DROP TABLE IF EXISTS public.organizations CASCADE;
 CREATE TABLE public.organizations (
     organization_id SERIAL PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
@@ -12,18 +13,17 @@ VALUES (
         'BrightFuture Builders',
         'A nonprofit focused on improving community infrastructure through sustainable construction projects.',
         'info@brightfuturebuilders.org',
-        'brightfuture-logo.png'
+        'b_builders_logo.png'
     ),
     (
         'GreenHarvest Growers',
         'An urban farming collective promoting food sustainability and education in local neighborhoods.',
         'contact@greenharvest.org',
-        'greenharvest-logo.png'
+        'harvest_logo.png'
     ),
     (
         'UnityServe Volunteers',
         'A volunteer coordination group supporting local charities and service initiatives.',
         'hello@unityserve.org',
-        'unityserve-logo.png'
+        'u_serve_logo.png'
     );
-    
