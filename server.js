@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
-import pool from "./database.js";
+import db from "./models/db.js";
 
 // Load environment variables from your .env file
 dotenv.config();
