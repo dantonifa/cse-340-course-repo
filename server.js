@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import pool from "./database.js";
 
 // Load environment variables from your .env file
 dotenv.config();
@@ -30,9 +31,23 @@ app.get("/", (req, res) => {
   res.render("index", { title: "Home" });
 });
 
-// Organizations Route
-app.get("/organizations", (req, res) => {
-  res.render("organizations", { title: "Organizations" });
+// Organizations Route (Dynamic with Database Fetch)
+app.get("/organizations", async (req, res) => {
+  try {
+    // Querying all records from the organizations table
+    const result = await pool.query(
+      "SELECT * FROM organizations ORDER BY organization_id ASC",
+    );
+
+    // Passing the rows along with the page title to the EJS view
+    res.render("organizations", {
+      title: "Organizations",
+      organizations: result.rows,
+    });
+  } catch (error) {
+    console.error("Error fetching organizations:", error);
+    res.status(500).send("Server Error: Unable to fetch data.");
+  }
 });
 
 // Services Route

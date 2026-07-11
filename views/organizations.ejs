@@ -7,32 +7,24 @@
 <!-- Organizations Section Container -->
 <div class="organizations-container">
     
-    <!-- Organization 1: Academic Leadership (Your 1st Image) -->
-    <div class="org-card">
-        <img src="/images/semana-santa-2021.webp" alt="Semana Santa 2021 Group Photo">
-        <div class="org-text">
-            <h3>Instituto Salvador Moncada - Leadership</h3>
-            <p>Featuring Director David Antonio Fajardo Ponce, teacher Mercedes Ponce Ruiz, and student David Enós Fajardo Mejía from the first year of the Baccalaureate in Sciences and Humanities (CC. y HH.) during the Semana Santa 2021 event.</p>
+<% if (organizations && organizations.length > 0) { %>
+    <% organizations.forEach(function(org) { %>
+        <!-- Dynamic Organization Card -->
+        <div class="org-card">
+            <img src="/images/<%= org.logo_filename %>" alt="<%= org.name %>">
+            <div class="org-text">
+                <h3><%= org.name %></h3>
+                <p><%= org.description %></p>
+            </div>
         </div>
-    </div>
+    <% }); %>
+<% } else { %>
+    <p>No organizations found.</p>
+<% } %>
+</div>
 
-    <!-- Organization 2: Civic & Community Values (Your 2nd Image) -->
-    <div class="org-card">
-        <img src="/images/valores-civicos-honduras.webp" alt="Civic and Community Values Mural">
-        <div class="org-text">
-            <h3>Civic & Community Engagement</h3>
-            <p>Driven by the motto "Formemos ciudadanos para engrandecer a Honduras" (Let's form citizens to make Honduras great). This initiative highlights student leadership, cultural pride, and community development projects supervised by our academic faculty.</p>
-        </div>
-    </div>
+<%- include('partials/footer') %>
 
-    <!-- Organization 3: Institutional Profiles & Programs (Your 3rd Image) -->
-    <div class="org-card">
-        <img src="/images/instituto-salvador-moncada.webp" alt="Instituto Salvador Moncada Programs and Graduation">
-        <div class="org-text">
-            <h3>Institutional Programs & Graduation</h3>
-            <p>The central hub for our academic offerings at Instituto Salvador Moncada and Jardín y Escuela Bilingüe "Our Legacy". Managed by Director Mercedes Ponce Ruiz and Secretary David Antonio Fajardo Ponce, this department oversees professional graduation programs, distance learning, computer labs, and specialized baccalaureate tracks.</p>
-        </div>
-    </div>
 
 </div>
 
