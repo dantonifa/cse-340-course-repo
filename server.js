@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import db from "./models/db.js";
 import { getAllOrganizations } from "./models/organizations.js";
+import { getAllCategories } from "./models/categories.js";
 
 // Load environment variables from your .env file
 dotenv.config();
@@ -55,8 +56,9 @@ app.get("/projects", (req, res) => {
 });
 
 // Categories Route
-app.get("/categories", (req, res) => {
-  res.render("categories", { title: "Categories" });
+app.get("/categories", async (req, res) => {
+  const categories = await getAllCategories();
+  res.render("categories", { title: "Categories", categories });
 });
 
 // Start the server listener

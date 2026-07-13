@@ -5,10 +5,9 @@
 <p>Browse student projects by academic field and discipline:</p>
 
 <ul class="categories-list">
-    <li><strong>Science & Chemistry:</strong> Laboratory experiments, food science, and biology research.</li>
-    <li><strong>Technology & Coding:</strong> Web development, software design, and digital literacy.</li>
-    <li><strong>Social Studies & Civics:</strong> Community service, history exhibitions, and leadership.</li>
-    <li><strong>Arts & Culture:</strong> Music ensembles, marching band performances, and visual arts.</li>
+  <% categories.forEach(category => { %>
+    <li><%= category.category_name %></li>
+  <% }) %>
 </ul>
 
 <%- include('partials/footer') %>

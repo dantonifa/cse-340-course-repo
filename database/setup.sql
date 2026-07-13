@@ -27,3 +27,27 @@ VALUES (
         'hello@unityserve.org',
         'u_serve_logo.png'
     );
+-- 1. Create table to register categories
+CREATE TABLE public.categories (
+    category_id SERIAL PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL UNIQUE
+);
+-- 2. Create intermediate table to connect organizations and categories (Many-to-Many)
+CREATE TABLE public.organization_categories (
+    organization_id INT NOT NULL,
+    category_id INT NOT NULL,
+    PRIMARY KEY (organization_id, category_id),
+    -- Foreign keys pointing to the correct tables in public schema
+    FOREIGN KEY (organization_id) REFERENCES public.organizations(organization_id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES public.categories(category_id) ON DELETE CASCADE
+);
+-- 4. Insert at least 3 categories relevant to service organizations
+INSERT INTO public.categories (category_name)
+VALUES ('Community Service'),
+    ('Environmental'),
+    ('Education');
+-- 5. Associate each organization with at least one category
+INSERT INTO public.organization_categories (organization_id, category_id)
+VALUES (1, 1),
+    (2, 2),
+    (3, 3);
