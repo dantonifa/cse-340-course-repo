@@ -2,9 +2,10 @@ import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
-import db from "./models/db.js";
-import { getAllOrganizations } from "./models/organizations.js";
-import { getAllCategories } from "./models/categories.js";
+// Add "src/" to your import paths
+import db from "./src/models/db.js";
+import { getAllOrganizations } from "./src/models/organizations.js";
+import { getAllCategories } from "./src/models/categories.js";
 
 // Load environment variables from your .env file
 dotenv.config();
@@ -20,7 +21,8 @@ const app = express();
 
 // Configure the EJS template view engine for Step 1
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+// Change this line to include "src/views"
+app.set("views", path.join(__dirname, "src/views"));
 
 // Serve static files like CSS and images from the public folder
 app.use(express.static(path.join(__dirname, "public")));
