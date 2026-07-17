@@ -1,14 +1,19 @@
-<%- include('partials/header') %>
+<%- include('./partials/header') %>
 
-<!-- Main Categories Content -->
-<h2>Project Categories</h2>
-<p>Browse student projects by academic field and discipline:</p>
+<main>
+    <h1><%= title %></h1>
+    
+  <!-- Main Categories Content -->
+  <h2>Project Categories</h2>
+  <p>Browse student projects by academic field and discipline:</p>
 
-<ul class="categories-list">
-  <% categories.forEach(category => { %>
-    <li><%= category.category_name %></li>
-  <% }) %>
-</ul>
+  <ul class="categories-list">
+    <% categories.forEach(category => { %>
+      <li><%= category.category_name %></li>
+    <% }) %>
+  </ul>
 
-<%- include('partials/footer') %>
+</main>
+
+<%- include('./partials/footer') %>
 

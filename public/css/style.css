@@ -3,6 +3,33 @@
    ========================================================================== */
 
 /* --- Home Page Styles --- */
+/*Navigation bar styling for the home page */
+nav {
+    height: 60px;
+    background-color: rgba(64, 224, 208, 0.403); 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+nav ul li {
+    display: inline;
+}
+nav ul li a {
+    color: var(--bg-white); /* Matches your white property */
+    text-decoration: none;
+    font-weight: bold;
+}
+/* Pseudo-class for hover effect on navigation links */
+nav ul li a:hover {
+    background-color: greenyellow; 
+}
 .home-images {
     display: flex;
     flex-direction: row;

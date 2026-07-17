@@ -14,8 +14,8 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const NODE_ENV = process.env.NODE_ENV;
-const PORT = process.env.PORT || 3000;
+const NODE_ENV = "production";
+const PORT = 3000;
 
 const app = express();
 
@@ -26,6 +26,10 @@ app.set("views", path.join(__dirname, "src/views"));
 
 // Serve static files like CSS and images from the public folder
 app.use(express.static(path.join(__dirname, "public")));
+// Route handler for the homepage
+app.get("/", (req, res) => {
+  res.render("home", { title: "Home" });
+});
 
 // Middleware to log all incoming requests
 app.use((req, res, next) => {
@@ -37,27 +41,20 @@ app.use((req, res, next) => {
 
 // Middleware to make NODE_ENV available to all templates
 app.use((req, res, next) => {
-  res.locals.NODE_ENV = NODE_ENV;
   next();
 });
+
 /* ***********************
  * Routes with Dynamic Titles
  * *********************** */
-
-// Home Route
-app.get("/", (req, res) => {
-  res.render("index", { title: "Home" });
+app.get("/", async (req, res) => {
+  const title = "Home";
+  res.render("home", { title });
 });
 
-// Organizations Route (Dynamic with Database Fetch)
 app.get("/organizations", async (req, res) => {
-  // Fetch all records using the model function
-  const organizations = await getAllOrganizations();
-  console.log(organizations);
-
   const title = "Our Partner Organizations";
-  // Pass both the title and the database results to the EJS template
-  res.render("organizations", { title, organizations });
+  res.render("organizations", { title });
 });
 
 // Services Route
@@ -66,8 +63,9 @@ app.get("/services", (req, res) => {
 });
 
 // Projects Route
-app.get("/projects", (req, res) => {
-  res.render("projects", { title: "Projects" });
+app.get("/projects", async (req, res) => {
+  const title = "Service Projects";
+  res.render("projects", { title });
 });
 
 // Categories Route
