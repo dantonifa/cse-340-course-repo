@@ -53,8 +53,10 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/organizations", async (req, res) => {
+  const organizations = await getAllOrganizations();
+  console.log("Organizations:", organizations); // Log the organizations for debugging
   const title = "Our Partner Organizations";
-  res.render("organizations", { title });
+  res.render("organizations", { title, organizations });
 });
 
 // Services Route
