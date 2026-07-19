@@ -51,3 +51,37 @@ INSERT INTO public.organization_categories (organization_id, category_id)
 VALUES (1, 1),
     (2, 2),
     (3, 3);
+-- Drop the table first if it already exists to prevent creation errors
+DROP TABLE IF EXISTS public.projects CASCADE;
+-- 1. Create the projects table fresh
+CREATE TABLE public.projects (
+    project_id SERIAL PRIMARY KEY,
+    organization_id INT NOT NULL,
+    title VARCHAR(150) NOT NULL,
+    description TEXT NOT NULL,
+    date DATE NOT NULL,
+    location TEXT NOT NULL,
+    FOREIGN KEY (organization_id) REFERENCES public.organizations(organization_id)
+);
+-- 2. Insert closed, valid sample data for projects
+INSERT INTO public.projects (
+        organization_id,
+        title,
+        description,
+        date,
+        location
+    )
+VALUES (
+        1,
+        'Campus Maintenance',
+        'Assisting with structures and campus cleanup.',
+        '2026-08-01',
+        'Main Campus'
+    ),
+    (
+        1,
+        'Sustainable Fish Pool',
+        'Building eco-friendly aquatic habitats.',
+        '2026-09-15',
+        'Biology Lab Area'
+    );

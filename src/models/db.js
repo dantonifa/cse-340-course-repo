@@ -20,6 +20,17 @@ if (process.env.NODE_ENV === "development") {
 
 let db = null;
 
+// Create the connection test function linked to the pool instance
+const testConnection = async () => {
+  try {
+    await pool.query("SELECT 1");
+    console.log("Database connection successful!");
+  } catch (error) {
+    console.error("Database connection error:", error);
+    throw error;
+  }
+};
+
 if (
   process.env.NODE_ENV === "development" &&
   process.env.ENABLE_SQL_LOGGING === "true"
@@ -35,9 +46,11 @@ if (
         throw error;
       }
     },
+    testConnection, // <-- Added here for logging environment
   };
 } else {
   db = pool;
+  db.testConnection = testConnection; // <-- Added here for standard environment
 }
 
 export default db;

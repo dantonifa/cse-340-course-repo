@@ -1,24 +1,24 @@
 <%- include('partials/header') %>
 <main>
-    <h1><%= title %></h1>
-    <p>Here are a few of our partner organizations:</p>
-    
-    <div class="organizations-container">
-        <% if (organizations && organizations.length > 0) { %>
-            <% organizations.forEach(organization => { %>
-                <div class="org-card">
-                    <!-- Dynamic Image Location -->
-                    <img src="/images/<%= organization.logo_filename %>" alt="<%= organization.name %> Logo">
+  <div class="organizations-container">
+    <% if (organizations && organizations.length > 0) { %>
+      <% organizations.forEach(organization => { %>
+        <!-- Wrap the card inside an anchor tag linking to the dynamic ID -->
+        <a href="/organizations/<%= organization.organization_id %>" class="org-card-link">
+          <div class="org-card">
+            <!-- Dynamic Image Location -->
+            <img src="/images/<%= organization.logo_filename %>" alt="<%= organization.name %> Logo">
 
-                    <!-- Dynamic Name and Info -->
-                    <h2><%= organization.name %></h2>
-                    <p><%= organization.description %></p>
-                    <p><strong>Contact:</strong> <a href="mailto:<%= organization.contact_email %>"><%= organization.contact_email %></a></p>
-                </div>
-            <% }) %>
-        <% } else { %>
-            <p>No organizations found.</p>
-        <% } %>
-    </div>
+            <!-- Dynamic Name and Info -->
+            <h2><%= organization.name %></h2>
+            <p><%= organization.description %></p>
+            <p><strong>Contact: </strong><%= organization.email %></p>
+          </div>
+        </a>
+      <% }) %>
+    <% } else { %>
+      <p>No organizations found.</p>
+    <% } %>
+  </div>
 </main>
 <%- include('partials/footer') %>

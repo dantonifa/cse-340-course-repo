@@ -128,5 +128,19 @@ main img {
     margin-top: auto; /* Aligns and anchors the image perfectly to the bottom of the card container */
 }
 
+/* Remove default browser underline and text colors from the card anchor link */
+.org-card-link {
+  text-decoration: none;  /* Eliminates the native blue underline */
+  color: inherit;         /* Forces inner text elements to keep their original colors */
+  display: block;         /* Ensures the whole card area acts as a clickable block */
+}
+
+/* Optional interactive hover effect for the organization layout card */
+.org-card-link:hover .org-card {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.25s ease-in-out;
+}
+
 
 
