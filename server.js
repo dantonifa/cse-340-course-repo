@@ -1,3 +1,6 @@
+// import the flash middleware at the top:
+import flash from "./src/middleware/flash.js";
+import session from "express-session";
 import router from "./src/routes.js";
 import express from "express";
 import dotenv from "dotenv";
@@ -12,11 +15,15 @@ dotenv.config();
 // Setup __dirname workaround required for ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-const NODE_ENV = "development";
-const PORT = 3000;
+const SESSION_SECRET = process.env.SESSION_SECRET;
+const NODE_ENV = process.env.NODE_ENV || "development";
+const PORT = process.env.PORT || 3000;
 
 const app = express();
+
+// Allow Express to receive and process common POST data
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Serve static files like CSS and images from the public folder
 app.use(express.static(path.join(__dirname, "public")));
@@ -27,12 +34,31 @@ app.set("view engine", "ejs");
 // Tell Express where to find your templates
 app.set("views", path.join(__dirname, "src/views"));
 
-// Middleware to log all incoming requests
+// Set up session management
+app.use(
+  session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 60 * 60 * 1000 },
+  }),
+);
+
+// Use flash message middleware
+app.use(flash);
+
+// Middleware para pasar los mensajes flash a todas las vistas EJS localmente
+app.use((req, res, next) => {
+  res.locals.messages = req.session.messages || []; // O usa req.flash() si el middleware interno de tu curso lo expone así
+  next();
+});
+
+// Middleware to log all incoming requests (Dejamos solo uno)
 app.use((req, res, next) => {
   if (NODE_ENV === "development") {
     console.log(`${req.method} ${req.url}`);
   }
-  next(); // Pass control to the next middleware or route
+  next();
 });
 
 // Middleware to make NODE_ENV available to all templates

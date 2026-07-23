@@ -1,5 +1,10 @@
--- 1. Create the table
+DROP TABLE IF EXISTS public.service_projects CASCADE;
+DROP TABLE IF EXISTS public.organization_categories CASCADE;
+DROP TABLE IF EXISTS public.categories CASCADE;
 DROP TABLE IF EXISTS public.organizations CASCADE;
+DROP TABLE IF EXISTS public.projects CASCADE;
+-- 1. Create the table
+-- DROP TABLE IF EXISTS public.organizations CASCADE;
 CREATE TABLE public.organizations (
     organization_id SERIAL PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
@@ -52,9 +57,9 @@ VALUES (1, 1),
     (2, 2),
     (3, 3);
 -- Drop the table first if it already exists to prevent creation errors
-DROP TABLE IF EXISTS public.projects CASCADE;
--- 1. Create the projects table fresh
-CREATE TABLE public.projects (
+DROP TABLE IF EXISTS public.service_projects CASCADE;
+-- 1. Create the service_projects table fresh
+CREATE TABLE public.service_projects (
     project_id SERIAL PRIMARY KEY,
     organization_id INT NOT NULL,
     title VARCHAR(150) NOT NULL,
@@ -64,7 +69,7 @@ CREATE TABLE public.projects (
     FOREIGN KEY (organization_id) REFERENCES public.organizations(organization_id)
 );
 -- 2. Insert closed, valid sample data for projects
-INSERT INTO public.projects (
+INSERT INTO public.service_projects (
         organization_id,
         title,
         description,

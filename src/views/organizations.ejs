@@ -1,24 +1,24 @@
 <%- include('partials/header') %>
 <main>
-  <div class="organizations-container">
+        <div class="organizations-container">
     <% if (organizations && organizations.length > 0) { %>
-      <% organizations.forEach(organization => { %>
-        <!-- Wrap the card inside an anchor tag linking to the dynamic ID -->
-        <a href="/organizations/<%= organization.organization_id %>" class="org-card-link">
-          <div class="org-card">
-            <!-- Dynamic Image Location -->
-            <img src="/images/<%= organization.logo_filename %>" alt="<%= organization.name %> Logo">
+          <% organizations.forEach(organization => { %>
+        <h2><%= organization.organization_name %></h2>
+        <img src="/images/<%= organization.logo_filename || 'placeholder-logo.png' %>" alt="<%= organization.organization_name %> Logo" style="max-width: 150px; height: auto; margin-bottom: 15px;">
+        <p><%= organization.organization_description %></p>
+        <p><strong>Contact: </strong><%= organization.organization_email %></p>
+    <% }) %>
 
-            <!-- Dynamic Name and Info -->
-            <h2><%= organization.name %></h2>
-            <p><%= organization.description %></p>
-            <p><strong>Contact: </strong><%= organization.email %></p>
-          </div>
-        </a>
-      <% }) %>
     <% } else { %>
       <p>No organizations found.</p>
     <% } %>
+
+    <!-- Add a link to the new organization form -->
+    <p><a href="/new-organization">Add a new organization</a></p>
   </div>
+
+
 </main>
 <%- include('partials/footer') %>
+
+

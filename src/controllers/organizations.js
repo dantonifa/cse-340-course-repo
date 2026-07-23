@@ -2,6 +2,7 @@
 import {
   getAllOrganizations,
   getOrganizationDetails,
+  createOrganization,
 } from "../models/organizations.js";
 import { getProjectsByOrganizationId } from "../models/projects.js";
 
@@ -12,7 +13,48 @@ const showOrganizationDetailsPage = async (req, res) => {
   const projects = await getProjectsByOrganizationId(organizationId);
   const title = "Organization Details";
 
-  res.render("organization", { title, organizationDetails, projects });
+  res.render("organizations", {
+    title,
+    organizations: [
+      {
+        organization_id:
+          organizationDetails.organization_id ||
+          organizationDetails.organizationId,
+        organization_name:
+          organizationDetails.organization_name || organizationDetails.name,
+        organization_description:
+          organizationDetails.organization_description ||
+          organizationDetails.description,
+        organization_email:
+          organizationDetails.organization_email ||
+          organizationDetails.contactEmail ||
+          organizationDetails.contact_email,
+        organization_phone:
+          organizationDetails.organization_phone ||
+          organizationDetails.contactPhone ||
+          organizationDetails.contact_phone,
+      },
+    ],
+    projects,
+  });
+};
+// Function to handle the form submission
+
+const processNewOrganizationForm = async (req, res) => {
+  const { name, description, contactEmail } = req.body;
+  const logoFilename = "placeholder-logo.png"; // Use the placeholder logo for all new organizations
+
+  const organizationId = await createOrganization({
+    name,
+    description,
+    contactEmail,
+    logoFilename,
+  });
+
+  // Set a success flash message
+  req.flash("success", "Organization added successfully!");
+
+  res.redirect(`/organizations/${organizationId}`);
 };
 
 const showOrganizationsPage = async (req, res) => {
@@ -21,5 +63,14 @@ const showOrganizationsPage = async (req, res) => {
   res.render("organizations", { title, organizations });
 };
 
-// Export any controller functions
-export { showOrganizationsPage, showOrganizationDetailsPage };
+const showNewOrganizationForm = async (req, res) => {
+  const title = "Add New Organization";
+  res.render("new-organization", { title });
+};
+
+export {
+  showOrganizationsPage,
+  showOrganizationDetailsPage,
+  showNewOrganizationForm,
+  processNewOrganizationForm,
+};
