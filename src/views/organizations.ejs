@@ -1,24 +1,33 @@
 <%- include('partials/header') %>
 <main>
-        <div class="organizations-container">
+  <div class="organizations-container">
     <% if (organizations && organizations.length > 0) { %>
-          <% organizations.forEach(organization => { %>
-        <h2><%= organization.organization_name %></h2>
-        <img src="/images/<%= organization.logo_filename || 'placeholder-logo.png' %>" alt="<%= organization.organization_name %> Logo" style="max-width: 150px; height: auto; margin-bottom: 15px;">
-        <p><%= organization.organization_description %></p>
-        <p><strong>Contact: </strong><%= organization.organization_email %></p>
-    <% }) %>
+      <% organizations.forEach(organization => { %>
+        <div class="organization-card">
+          <!-- 1. Fix Name Variable -->
+          <h2><%= organization.organization_name || organization.name %></h2>
+          
+          <% if (organization.logo_filename) { %>
+            <img src="/images/<%= organization.logo_filename %>" alt="Logo">
+          <% } else { %>
+            <img src="/images/placeholder-logo.png" alt="Placeholder Logo">
+          <% } %>
 
+          <p><%= organization.organization_description || organization.description %></p>
+          <p><strong>Contact: </strong><%= organization.organization_email || organization.email || organization.contact_email %></p>
+
+        </div>
+      <% }) %>
     <% } else { %>
       <p>No organizations found.</p>
     <% } %>
-
-    <!-- Add a link to the new organization form -->
-    <p><a href="/new-organization">Add a new organization</a></p>
   </div>
 
-
+  <!-- Add a link to the new organization form -->
+  <p><a href="/new-organization">Add a new organization</a></p>
 </main>
 <%- include('partials/footer') %>
+
+  
 
 

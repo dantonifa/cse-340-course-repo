@@ -47,9 +47,9 @@ app.use(
 // Use flash message middleware
 app.use(flash);
 
-// Middleware para pasar los mensajes flash a todas las vistas EJS localmente
+// Middleware to pass flash messages to all EJS views locally
 app.use((req, res, next) => {
-  res.locals.messages = req.session.messages || []; // O usa req.flash() si el middleware interno de tu curso lo expone así
+  res.locals.messages = req.flash(); // Extracts and clears flash messages automatically
   next();
 });
 
@@ -67,10 +67,20 @@ app.use((req, res, next) => {
   next();
 });
 
-// Use the imported router to handle routes
+// Middleware to make locale available to all views
+app.use((req, res, next) => {
+  res.locals.NODE_ENV = process.env.NODE_ENV;
+  next();
+});
+
+// Middleware to parse incoming HTML form data into req.body
+app.use(express.urlencoded({ extended: true }));
+
+// Use the imported routes
 app.use(router);
 
 // Catch-all route for 404 errors
+
 app.use((req, res, next) => {
   const err = new Error("Page Not Found");
   err.status = 404;
