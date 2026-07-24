@@ -109,10 +109,12 @@ app.use((err, req, res, next) => {
 });
 
 // Start the server listener
-app.listen(PORT, async () => {
+const HOST = "0.0.0.0";
+
+app.listen(PORT, HOST, async () => {
   try {
     await db.testConnection();
-    console.log(`Server is running at http://127.0.0.1:${PORT}`);
+    console.log(`Server is running at http://${HOST}:${PORT}`);
     console.log(`Environment: ${NODE_ENV}`);
   } catch (error) {
     console.error("Error connecting to the database:", error);
