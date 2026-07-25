@@ -34,11 +34,7 @@ router.post(
   processNewOrganizationForm,
 );
 
-router.post(
-  "/edit-organization/:id",
-  organizationValidation,
-  processEditOrganizationForm,
-);
+router.post("/edit-organization/:id", processEditOrganizationForm);
 
 router.get("/organizations/:id", showOrganizationDetailsPage);
 
