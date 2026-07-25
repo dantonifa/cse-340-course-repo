@@ -15,6 +15,7 @@
 
           <p><%= organization.organization_description || organization.description %></p>
           <p><strong>Contact: </strong><%= organization.organization_email || organization.email || organization.contact_email %></p>
+          <p><a href="/edit-organization/<%= organization.organization_id %>">Edit</a></p>
 
         </div>
       <% }) %>
