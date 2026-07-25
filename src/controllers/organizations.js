@@ -3,6 +3,7 @@ import {
   getAllOrganizations,
   getOrganizationDetails,
   createOrganization,
+  updateOrganization,
 } from "../models/organizations.js";
 import { getProjectsByOrganizationId } from "../models/projects.js";
 
@@ -137,10 +138,7 @@ const processEditOrganizationForm = async (req, res) => {
     res.redirect("/organizations");
   } catch (error) {
     console.error("Error updating organization:", error);
-
-    // Set a flash error message and reload the form if update fails
-    req.flash("errorMessages", "Failed to update organization.");
-    res.redirect(`/edit-organization/${organizationId}`);
+    res.send("DATABASE ERROR: " + error.message);
   }
 };
 
