@@ -117,14 +117,10 @@ const showNewOrganizationForm = async (req, res) => {
 };
 
 const processEditOrganizationForm = async (req, res) => {
-  // 1. Get the organization ID from req.params.id
   const organizationId = req.params.id;
-
-  // 2. Extract form data from req.body
   const { name, description, contactEmail, logoFilename } = req.body;
 
   try {
-    // 3. Call the model function to update the database records
     await updateOrganization(
       organizationId,
       name,
@@ -133,12 +129,15 @@ const processEditOrganizationForm = async (req, res) => {
       logoFilename,
     );
 
-    // Set a flash success message and redirect back to the list
-    req.flash("successMessages", "Organization updated successfully!");
-    res.redirect("/organizations");
+    // Set a success flash message matching instructor sample
+    req.flash("success", "Organization updated successfully!");
+
+    // Redirect back to the organization details page
+    res.redirect(`/organizations/${organizationId}`);
   } catch (error) {
     console.error("Error updating organization:", error);
-    res.send("DATABASE ERROR: " + error.message);
+    req.flash("error", "Failed to update organization.");
+    res.redirect(`/edit-organization/${organizationId}`);
   }
 };
 
