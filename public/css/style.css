@@ -58,6 +58,24 @@ nav ul li a:hover {
   margin: 0 auto;
 }
 
+/*Distribute the Organization card details with enough padding and spacing for a clean layout */
+.form-group {
+  margin-bottom: 15px;
+}
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+input,
+textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
 /* Changed from .org-card to match your EJS layout precisely */
 .organization-card {
   background-color: #ffffff; /* Explicitly forces a crisp white card background */
