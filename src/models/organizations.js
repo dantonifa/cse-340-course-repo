@@ -67,7 +67,7 @@ const createOrganization = async ({
 
 // Function to update an organization record in the database
 const updateOrganization = async (
-  id,
+  organizationId,
   name,
   description,
   contactEmail,
@@ -76,18 +76,34 @@ const updateOrganization = async (
   const query = `
     UPDATE public.organizations
     SET 
-      name = $1,
-      description = $2,
-      contact_email = $3,
+      name = $1, 
+      description = $2, 
+      contact_email = $3, 
       logo_filename = $4
     WHERE organization_id = $5
-    RETURNING *;
+    RETURNING organization_id;
   `;
 
-  const queryParams = [name, description, contactEmail, logoFilename, id];
+  const queryParams = [
+    name,
+    description,
+    contactEmail,
+    logoFilename,
+    organizationId,
+  ];
   const result = await db.query(query, queryParams);
-  return result.rows[0];
+
+  if (result.rows.length === 0) {
+    throw new Error("Organization not found");
+  }
+
+  return result.rows[0].organization_id;
 };
 
 // Export the model functions
-export { getAllOrganizations, getOrganizationDetails, createOrganization, updateOrganization };
+export {
+  getAllOrganizations,
+  getOrganizationDetails,
+  createOrganization,
+  updateOrganization,
+};
