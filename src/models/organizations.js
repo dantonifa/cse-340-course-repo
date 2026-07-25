@@ -65,5 +65,29 @@ const createOrganization = async ({
   return result.rows[0].organization_id;
 };
 
+// Function to update an organization record in the database
+const updateOrganization = async (
+  id,
+  name,
+  description,
+  contactEmail,
+  logoFilename,
+) => {
+  const query = `
+    UPDATE public.organizations
+    SET 
+      name = $1,
+      description = $2,
+      contact_email = $3,
+      logo_filename = $4
+    WHERE organization_id = $5
+    RETURNING *;
+  `;
+
+  const queryParams = [name, description, contactEmail, logoFilename, id];
+  const result = await db.query(query, queryParams);
+  return result.rows[0];
+};
+
 // Export the model functions
-export { getAllOrganizations, getOrganizationDetails, createOrganization };
+export { getAllOrganizations, getOrganizationDetails, createOrganization, updateOrganization };

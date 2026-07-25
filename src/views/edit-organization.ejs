@@ -15,10 +15,10 @@
 
  <form action="/edit-organization/<%= organizationDetails.id %>" method="POST">
     <div class="form-group">
-      <label for="name">Organization Name</label>
+      <label for="organizationName">Organization Name</label>
       <input
         type="text"
-        id="name"
+        id="organizationName"
         name="name"
         required
         maxlength="150"
@@ -27,9 +27,9 @@
     </div>
 
     <div class="form-group">
-      <label for="description">Description</label>
+      <label for="organizationDescription">Description</label>
       <textarea
-        id="description"
+        id="organizationDescription"
         name="description"
         required
         maxlength="500"
