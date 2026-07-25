@@ -21,6 +21,14 @@ const showOrganizationDetailsPage = async (req, res) => {
   });
 };
 
+const showEditOrganizationForm = async (req, res) => {
+  const organizationId = req.params.id;
+  const organizationDetails = await getOrganizationDetails(organizationId);
+
+  const title = "Edit Organization";
+  res.render("edit-organization", { title, organizationDetails });
+};
+
 // Define validation and sanitization rules for organization form
 // Define validation rules for organization form
 const organizationValidation = [
@@ -113,4 +121,5 @@ export {
   showNewOrganizationForm,
   processNewOrganizationForm,
   organizationValidation,
+  showEditOrganizationForm,
 };
