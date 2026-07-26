@@ -12,7 +12,11 @@ import {
   processEditOrganizationForm,
 } from "./controllers/organizations.js";
 
-import { showProjectsPage } from "./controllers/projects.js";
+import {
+  showProjectsPage,
+  showNewProjectForm,
+  processNewProjectForm,
+} from "./controllers/projects.js";
 import { showCategoriesPage } from "./controllers/categories.js";
 import { testErrorPage } from "./controllers/errors.js";
 
@@ -39,6 +43,8 @@ router.post("/edit-organization/:id", processEditOrganizationForm);
 router.get("/organizations/:id", showOrganizationDetailsPage);
 
 router.get("/projects", showProjectsPage);
+router.get("/new-project", showNewProjectForm);
+router.post("/new-project", processNewProjectForm);
 router.get("/categories", showCategoriesPage);
 
 // error-handling routes
