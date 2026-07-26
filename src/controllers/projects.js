@@ -26,15 +26,20 @@ const showNewProjectForm = async (req, res) => {
 const processNewProjectForm = async (req, res) => {
   const { organizationId, title, description, location, date } = req.body;
   try {
-    const newProyectId = await createProject(title, description, location, date, organizationId);
+    const newProyectId = await createProject(
+      title,
+      description,
+      location,
+      date,
+      organizationId,
+    );
     req.flash("success", "Project creates successfully!");
     res.redirect("/projects");
   } catch (error) {
     req.flash("error", "Failed to create project.");
     res.redirect("/projects/new");
   }
-}; 
-}
+};
 
 // Define any controller functions
 const showProjectsPage = async (req, res) => {
