@@ -1,0 +1,18 @@
+<!--Create a form that submits to the POST route /assign-categories/:projectId.-->
+<form action="/assign-categories/<%= projectId %>" method="POST">
+  <!-- Add your form fields here -->
+  <!--Display the project title at the top of the form.-->
+  <h1><%= projectTitle %></h1>
+  <!--Loop through all categories and create a checkbox for each category.
+The checkbox should be checked if the category is in the list of assigned categories for the project.
+The checkbox name should be categoryIds so that it submits an array of selected category IDs.-->
+  <% categories.forEach(category => { %>
+    <div>
+      <label>
+        <input type="checkbox" name="categoryIds" value="<%= category.id %>" <%= assignedCategoryIds.includes(category.id) ? 'checked' : '' %> />
+        <%= category.name %>
+      </label>
+    </div>
+  <% }); %>
+  <button type="submit">Assign Categories</button>
+</form>

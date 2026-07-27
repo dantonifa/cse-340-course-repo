@@ -1,6 +1,5 @@
 //Import showNewOrganizationForm controller function
 import express from "express";
-
 import { showHomePage } from "./controllers/index.js";
 import {
   showOrganizationsPage,
@@ -16,6 +15,9 @@ import {
   showProjectsPage,
   showNewProjectForm,
   processNewProjectForm,
+  projectValidation,
+  showAssignCategoriesForm,
+  processAssignCategoriesForm,
 } from "./controllers/projects.js";
 import { showCategoriesPage } from "./controllers/categories.js";
 import { testErrorPage } from "./controllers/errors.js";
@@ -38,14 +40,27 @@ router.post(
   processNewOrganizationForm,
 );
 
+/*Add a POST route for /project/:projectId/assign-categories that 
+calls the processAssignCategoriesForm controller function.*/
+
+router.post(
+  "/project/:projectId/assign-categories",
+  processAssignCategoriesForm,
+);
+
 router.post("/edit-organization/:id", processEditOrganizationForm);
 
 router.get("/organizations/:id", showOrganizationDetailsPage);
 
 router.get("/projects", showProjectsPage);
 router.get("/new-project", showNewProjectForm);
-router.post("/new-project", processNewProjectForm);
+router.post("/new-project", projectValidation, processNewProjectForm);
 router.get("/categories", showCategoriesPage);
+router.get("/assign-categories/:projectId", showAssignCategoriesForm);
+router.post("/assign-categories/:projectId", processAssignCategoriesForm);
+/*Add a GET route for /project/:projectId/assign-categories that calls the 
+showAssignCategoriesForm controller function.*/
+router.get("/project/:projectId/assign-categories", showAssignCategoriesForm);
 
 // error-handling routes
 router.get("/test-error", testErrorPage);
