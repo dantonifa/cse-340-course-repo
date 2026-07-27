@@ -5,6 +5,8 @@ location: trim, ensure not empty, length less than 200.
 date: ensure not empty, valid date format.
 organizationId: ensure not empty, valid integer.*/
 
+import { updateCategoryAssignments } from "../models/categories.js";
+
 import { body, validationResult } from "express-validator";
 
 export const projectValidation = [
@@ -39,7 +41,15 @@ export const projectValidation = [
 ];
 
 // Import any needed model functions
-import { getUpcomingProjects, createProject } from "../models/projects.js";
+import {
+  getUpcomingProjects,
+  createProject,
+  getProjectDetails,
+} from "../models/projects.js";
+import {
+  getAllCategories,
+  getCategoriesByServiceProjectId,
+} from "../models/categories.js";
 
 //add an import for the getAllOrganizations function from the
 // ../models/organizations.js file.
@@ -102,6 +112,54 @@ const showProjectsPage = async (req, res) => {
   const title = "Service Projects";
 
   res.render("projects", { title, projects });
+};
+
+//provide an export named 'processAssignCategoriesForm'.
+
+export const processAssignCategoriesForm = async (req, res) => {
+  const { projectId } = req.params;
+  const { categoryIds } = req.body; // Assuming categoryIds is an array of selected category IDs
+
+  try {
+    await updateCategoryAssignments(projectId, categoryIds);
+    req.flash("success", "Categories updated successfully!");
+    res.redirect("/projects");
+  } catch (error) {
+    req.flash("error", "Failed to update categories.");
+    res.redirect(`/assign-categories/${projectId}`);
+  }
+};
+
+//Create a new function named showAssignCategoriesForm that takes req and res as parameters. This function should do the following:
+// Extract the projectId from req.params.
+// Call the getProjectDetails model function to retrieve the details of the specified project.
+// Call the getAllCategories model function to retrieve a list of all categories from the database.
+// Call the getCategoriesByServiceProjectId model function to retrieve the categories currently assigned to the specified project.
+// Render the assign-categories view, passing in the project details, all categories, and the assigned categories.
+export const showAssignCategoriesForm = async (req, res) => {
+  const { projectId } = req.params;
+
+  // Call the model function which directly returns a single project object
+  const project = await getProjectDetails(projectId);
+
+  // Extract the first project object from the database result rows array
+
+  const allCategories = await getAllCategories();
+  const assignedCategoriesRows =
+    await getCategoriesByServiceProjectId(projectId);
+
+  // Map the database rows into a flat array of primitive ID integers
+  const assignedCategoryIds = assignedCategoriesRows.map(
+    (row) => row.category_id,
+  );
+
+  res.render("assign-categories", {
+    title: "Assign Categories",
+    projectId: project.project_id,
+    projectTitle: project.title,
+    categories: allCategories,
+    assignedCategoryIds, // This matches line 12 in your EJS template perfectly
+  });
 };
 
 // Export any controller functions

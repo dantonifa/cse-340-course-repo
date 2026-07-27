@@ -45,3 +45,17 @@ export async function getAllCategories() {
     throw error;
   }
 }
+
+// Function to get categories assigned to a specific project
+
+export async function getCategoriesByServiceProjectId(projectId) {
+  try {
+    const sql =
+      "SELECT category_id FROM public.project_categories WHERE project_id = $1";
+    const result = await pool.query(sql, [projectId]);
+    return result.rows;
+  } catch (error) {
+    console.error("Error fetching categories by project ID:", error);
+    throw error;
+  }
+}

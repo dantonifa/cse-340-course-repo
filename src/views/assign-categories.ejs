@@ -9,8 +9,10 @@ The checkbox name should be categoryIds so that it submits an array of selected 
   <% categories.forEach(category => { %>
     <div>
       <label>
-        <input type="checkbox" name="categoryIds" value="<%= category.id %>" <%= assignedCategoryIds.includes(category.id) ? 'checked' : '' %> />
-        <%= category.name %>
+        <input type="checkbox" name="categoryIds" value="<%= category.category_id %>" <%= assignedCategoryIds.includes(category.category_id) ? 'checked' : '' %> />
+        <%= category.category_name %>
+
+
       </label>
     </div>
   <% }); %>

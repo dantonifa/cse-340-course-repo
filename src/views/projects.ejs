@@ -12,7 +12,7 @@
         <p><strong>Date:</strong> <%= new Date(project.date).toLocaleDateString() %></p>
         <p><strong>Location:</strong> <%= project.location %></p>
         <p><strong>Organized by:</strong> <%= project.organization_name %></p>
-        <p><strong>Categories:</strong> <%= project.categories.join(', ') %></p>
+        <p><strong>Categories:</strong> <%= project.categories ? project.categories.join(', ') : 'None' %></p>
         <p><a href="/assign-categories/<%= project.project_id %>">Edit Categories</a></p>
       </li>
     <% }) %>

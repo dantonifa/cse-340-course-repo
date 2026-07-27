@@ -72,6 +72,36 @@ const createProject = async (
   return result.rows[0].project_id;
 };
 
+// Create and export getProjectDetails function that takes a projectId as a parameter 
+// and retrieves the details of the specified project from the database. 
+// The function should return an object containing the project details, 
+// including the project ID, title, description, location, date, 
+// organization ID, and organization name.
+
+export async function getProjectDetails(projectId) {
+  try {
+    const sql = `
+      SELECT 
+        p.project_id, 
+        p.title, 
+        p.description, 
+        p.location, 
+        p.date, 
+        p.organization_id, 
+        o.name AS organization_name
+      FROM public.service_projects p
+      INNER JOIN public.organizations o 
+        ON p.organization_id = o.organization_id
+      WHERE p.project_id = $1
+    `;
+    const result = await db.query(sql, [projectId]);
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error fetching project details by ID:", error);
+    throw error;
+  }
+}
+
 // Export all model functions
 export {
   getAllProjects,
