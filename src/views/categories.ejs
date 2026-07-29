@@ -11,9 +11,13 @@
 
   <ul class="categories-list">
     <% categories.forEach(category => { %>
-      <li><%= category.category_name %></li>
+        <li>
+            <%= category.category_name %> 
+            | <a href="/edit-category/<%= category.category_id %>">Edit</a>
+        </li>
     <% }) %>
-  </ul>
+</ul>
+
 
 </main>
 

@@ -120,8 +120,7 @@ const showNewCategoryForm = async (req, res) => {
 const showEditCategoryForm = async (req, res) => {
   try {
     const { id } = req.params;
-    const rows = await getCategoryById(id);
-    const singleCategory = rows[0];
+    const singleCategory = await getCategoryById(id);
 
     if (!singleCategory) {
       return res.status(404).send("Category not found");
@@ -144,9 +143,9 @@ const showEditCategoryForm = async (req, res) => {
 const processEditCategoryForm = async (req, res) => {
   try {
     const { id } = req.params;
-    const { categoryName } = req.body; // Matches input 'name' attribute in EJS
+    const { category_name } = req.body; // Matches input 'name' attribute in EJS
 
-    await updateCategory(id, categoryName);
+    await updateCategory(id, category_name);
     res.redirect("/categories");
   } catch (error) {
     res.status(500).send("Error updating category");
