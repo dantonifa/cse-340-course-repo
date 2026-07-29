@@ -26,17 +26,20 @@ const getProjectsByOrganizationId = async (organizationId) => {
 const getUpcomingProjects = async (number_of_projects) => {
   const query = `
     SELECT 
-      p.project_id, 
-      p.title, 
-      p.description, 
-      p.date, 
-      p.location, 
-      p.organization_id, 
-      o.name AS organization_name
+      p.project_id,
+      p.title,
+      p.description,
+      p.date,
+      p.location,
+      p.organization_id,
+      o.name AS organization_name,
+      COALESCE(ARRAY_AGG(c.category_name) FILTER (WHERE c.category_name IS NOT NULL), '{}') AS categories
     FROM public.service_projects p
-    INNER JOIN public.organizations o 
-      ON p.organization_id = o.organization_id
+    INNER JOIN public.organizations o ON p.organization_id = o.organization_id
+    LEFT JOIN public.project_categories pc ON p.project_id = pc.project_id
+    LEFT JOIN public.categories c ON pc.category_id = c.category_id
     WHERE p.date >= CURRENT_DATE
+    GROUP BY p.project_id, o.name
     ORDER BY p.date ASC
     LIMIT $1;
   `;
@@ -72,10 +75,10 @@ const createProject = async (
   return result.rows[0].project_id;
 };
 
-// Create and export getProjectDetails function that takes a projectId as a parameter 
-// and retrieves the details of the specified project from the database. 
-// The function should return an object containing the project details, 
-// including the project ID, title, description, location, date, 
+// Create and export getProjectDetails function that takes a projectId as a parameter
+// and retrieves the details of the specified project from the database.
+// The function should return an object containing the project details,
+// including the project ID, title, description, location, date,
 // organization ID, and organization name.
 
 export async function getProjectDetails(projectId) {

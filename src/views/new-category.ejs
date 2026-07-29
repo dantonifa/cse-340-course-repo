@@ -1,0 +1,33 @@
+<%- include('./partials/header') %>
+
+<main>
+  <h1>Create New Category</h1>
+
+  <!-- Flash message container for server-side errors -->
+  <% if (locals.errors) { %>
+    <ul class="error-messages">
+      <% errors.forEach(error => { %>
+        <li><%= error.msg %></li>
+      <% }); %>
+    </ul>
+  <% } %>
+
+  <form action="/categories/new" method="POST">
+    <div class="form-group">
+      <label for="category_name">Category Name:</label>
+      <!-- Requirement 3: Client-side validation with required and max length 100 -->
+      <input 
+        type="text" 
+        id="category_name" 
+        name="category_name" 
+        value="<%= locals.category_name || '' %>" 
+        required 
+        maxlength="100"
+      >
+    </div>
+
+    <button type="submit" class="btn">Add Category</button>
+  </form>
+</main>
+
+<%- include('./partials/footer') %>

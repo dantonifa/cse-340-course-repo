@@ -46,6 +46,30 @@ export async function getAllCategories() {
   }
 }
 
+// Function to get a single category by its ID
+export async function getCategoryById(id) {
+  try {
+    const sql = "SELECT * FROM public.categories WHERE category_id = $1";
+    const result = await pool.query(sql, [id]);
+    return result.rows[0]; // Returns just the single row object
+  } catch (error) {
+    console.error("Error fetching category by ID:", error);
+    throw error;
+  }
+}
+
+// Function to update an existing category name
+export async function updateCategory(id, name) {
+  try {
+    const sql =
+      "UPDATE public.categories SET category_name = $1 WHERE category_id = $2";
+    await pool.query(sql, [name, id]);
+  } catch (error) {
+    console.error("Error updating category:", error);
+    throw error;
+  }
+}
+
 // Function to get categories assigned to a specific project
 
 export async function getCategoriesByServiceProjectId(projectId) {

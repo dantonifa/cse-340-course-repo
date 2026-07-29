@@ -77,7 +77,7 @@ app.use((req, res, next) => {
 app.use(express.urlencoded({ extended: true }));
 
 // Use the imported routes
-app.use(router);
+app.use("/", router);
 
 // Catch-all route for 404 errors
 
@@ -109,14 +109,6 @@ app.use((err, req, res, next) => {
 });
 
 // Start the server listener
-const HOST = "0.0.0.0";
-
-app.listen(PORT, HOST, async () => {
-  try {
-    await db.testConnection();
-    console.log(`Server is running at http://${HOST}:${PORT}`);
-    console.log(`Environment: ${NODE_ENV}`);
-  } catch (error) {
-    console.error("Error connecting to the database:", error);
-  }
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

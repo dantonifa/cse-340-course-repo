@@ -1,9 +1,15 @@
 // Import any needed model functions
+
+import { body, validationResult } from "express-validator";
+
 import {
   getAllCategories,
   getCategoriesByServiceProjectId,
   updateCategoryAssignments,
+  getCategoryById, // <-- Add this
+  updateCategory, // <-- Add this
 } from "../models/categories.js";
+
 import { getProjectDetails } from "../models/projects.js";
 
 /*Create a new function showAssignCategoriesForm. Get the projectId from the request parameters.
@@ -26,9 +32,10 @@ const showAssignCategoriesForm = async (req, res) => {
 
   res.render("assign-categories", {
     title,
-    project,
+    projectId,
+    projectTitle: project.title, // <-- Add this line to pass the project title
     categories,
-    assignedCategories,
+    assignedCategoryIds: assignedCategories,
   });
 };
 
@@ -42,11 +49,54 @@ message.Redirect the user back to the project details page /project/{projectId}.
 
 const processAssignCategoriesForm = async (req, res) => {
   const { projectId } = req.params;
-  const selectedCategoryIds = req.body.categories || [];
+  const selectedCategoryIds = req.body.categoryIds || [];
   await updateCategoryAssignments(projectId, selectedCategoryIds);
   req.flash("success", "Categories updated successfully.");
-  res.redirect(`/project/${projectId}`);
+  res.redirect("/projects");
 };
+
+// Process the form submission for a new category
+const processNewCategoryForm = async (req, res) => {
+  // 1. Catch validation errors from the middleware
+  const errors = validationResult(req);
+
+  // 2. If there are errors (e.g. name length is less than 3), reload the form
+  if (!errors.isEmpty()) {
+    return res.render("new-category", {
+      title: "Create New Category",
+      errors: errors.array(),
+      category_name: req.body.category_name, // Keep old input value
+    });
+  }
+
+  try {
+    const { category_name } = req.body;
+
+    // 3. Call your model function to save the category to the database
+    // (Ensure you have a function like addCategory in your model)
+    await addCategory(category_name);
+
+    req.flash("success", "Category created successfully.");
+    res.redirect("/categories");
+  } catch (error) {
+    console.error("Error creating category:", error);
+    res.render("new-category", {
+      title: "Create New Category",
+      errors: [{ msg: "Database error. Please try again." }],
+      category_name: req.body.category_name,
+    });
+  }
+};
+
+// Server-side validation rules for creating/editing categories
+const categoryValidation = [
+  body("category_name")
+    .trim()
+    .notEmpty()
+    .withMessage("Category name is required.")
+    .isLength({ min: 3, max: 100 })
+    .withMessage("Category name must be between 3 and 100 characters long."),
+];
 
 // Define any controller functions
 const showCategoriesPage = async (req, res) => {
@@ -56,9 +106,61 @@ const showCategoriesPage = async (req, res) => {
   res.render("categories", { title, categories });
 };
 
+// Display the new category form view
+const showNewCategoryForm = async (req, res) => {
+  res.render("new-category", {
+    title: "Create New Category",
+    errors: null,
+  });
+};
+
+// Display the edit category form pre-populated with data
+// Display the edit category form pre-populated with data
+// Display the edit category form pre-populated with data
+const showEditCategoryForm = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const rows = await getCategoryById(id);
+    const singleCategory = rows[0];
+
+    if (!singleCategory) {
+      return res.status(404).send("Category not found");
+    }
+    res.render("edit-category", {
+      title: "Edit Category",
+      errors: null,
+      // Map db columns to what your EJS template expects
+      category: {
+        id: singleCategory.category_id,
+        name: singleCategory.category_name,
+      },
+    });
+  } catch (error) {
+    res.status(500).send("Error rendering edit category form");
+  }
+};
+
+// Process the edit category form submission
+const processEditCategoryForm = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { categoryName } = req.body; // Matches input 'name' attribute in EJS
+
+    await updateCategory(id, categoryName);
+    res.redirect("/categories");
+  } catch (error) {
+    res.status(500).send("Error updating category");
+  }
+};
+
 // Export any controller functions
 export {
   showCategoriesPage,
   showAssignCategoriesForm,
   processAssignCategoriesForm,
+  categoryValidation,
+  showNewCategoryForm,
+  processNewCategoryForm,
+  showEditCategoryForm,
+  processEditCategoryForm,
 };
