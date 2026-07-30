@@ -13,6 +13,8 @@ import db from "./src/models/db.js";
 dotenv.config();
 
 // Setup __dirname workaround required for ES Modules
+
+const staticRoutes = require("./routes/routes");
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const SESSION_SECRET = process.env.SESSION_SECRET;
@@ -78,6 +80,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Use the imported routes
 app.use("/", router);
+
+app.use("/", staticRoutes);
 
 // Catch-all route for 404 errors
 
