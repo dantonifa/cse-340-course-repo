@@ -12,21 +12,26 @@
     <% } %>
 
     <form action="/edit-category/<%= category.id %>" method="POST" class="form-layout">
-        <div class="form-group">
-            <label for="categoryName">Category Name:</label>
-            <input 
-                type="text" 
-                id="categoryName" 
-                name="categoryName" 
-                value="<%= category.name %>"
-                placeholder="Enter category name" 
-                required
-            >
-        </div>
+  <!-- 1. The hidden input field to send the ID -->
+  <input type="hidden" name="category_id" value="<%= category.id %>">
 
-        <button type="submit" class="btn-submit">Update Category</button>
-        <a href="/categories" class="btn-cancel">Cancel</a>
-    </form>
+  <div class="form-group">
+    <label for="categoryName">Category Name:</label>
+    <!-- 2. Fixed the name attribute to match your controller -->
+    <input 
+      type="text" 
+      id="categoryName" 
+      name="category_name" 
+      value="<%= category.name %>" 
+      placeholder="Enter category name" 
+      required
+    >
+  </div>
+
+  <button type="submit" class="btn-submit">Update Category</button>
+  <a href="/categories" class="btn-cancel">Cancel</a>
+</form>
+
 </main>
 
 <%- include('partials/footer') %>

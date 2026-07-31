@@ -83,3 +83,16 @@ export async function getCategoriesByServiceProjectId(projectId) {
     throw error;
   }
 }
+
+/* Create a function to insert a brand new category into the database */
+export async function createCategory(category_name) {
+  try {
+    const sql =
+      "INSERT INTO public.categories (category_name) VALUES ($1) RETURNING *";
+    const result = await pool.query(sql, [category_name]);
+    return result.rows;
+  } catch (error) {
+    console.error("Error creating category in model:", error);
+    throw error;
+  }
+}

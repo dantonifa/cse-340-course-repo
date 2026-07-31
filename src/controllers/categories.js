@@ -6,7 +6,8 @@ import {
   getAllCategories,
   getCategoriesByServiceProjectId,
   updateCategoryAssignments,
-  getCategoryById, // <-- Add this
+  getCategoryById,
+  createCategory, // <-- Add this
   updateCategory, // <-- Add this
 } from "../models/categories.js";
 
@@ -74,15 +75,15 @@ const processNewCategoryForm = async (req, res) => {
 
     // 3. Call your model function to save the category to the database
     // (Ensure you have a function like addCategory in your model)
-    await addCategory(category_name);
+    await createCategory(category_name);
 
     req.flash("success", "Category created successfully.");
     res.redirect("/categories");
   } catch (error) {
-    console.error("Error creating category:", error);
     res.render("new-category", {
       title: "Create New Category",
-      errors: [{ msg: "Database error. Please try again." }],
+      // Replace the generic string with the actual error message from the database:
+      errors: [{ msg: error.message || "Unknown Database Error" }],
       category_name: req.body.category_name,
     });
   }
@@ -115,8 +116,6 @@ const showNewCategoryForm = async (req, res) => {
 };
 
 // Display the edit category form pre-populated with data
-// Display the edit category form pre-populated with data
-// Display the edit category form pre-populated with data
 const showEditCategoryForm = async (req, res) => {
   try {
     const { id } = req.params;
@@ -135,20 +134,41 @@ const showEditCategoryForm = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).send("Error rendering edit category form");
+    // Keep the 500 status code, but render the visual EJS template with the real error message!
+    res.status(500).render("edit-category", {
+      title: "Edit Category",
+      errors: [{ msg: error.message || "Unknown Database Error" }],
+      category_name: req.body.category_name,
+    });
   }
 };
 
 // Process the edit category form submission
 const processEditCategoryForm = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { category_name } = req.body; // Matches input 'name' attribute in EJS
+    const { category_id, category_name } = req.body;
+    const id = category_id;
 
     await updateCategory(id, category_name);
     res.redirect("/categories");
   } catch (error) {
-    res.status(500).send("Error updating category");
+    // Check if the error is a unique constraint violation
+    let errorMsg = "Unknown error occurred";
+    if (error.code === "23505" || error.message.includes("unique constraint")) {
+      errorMsg =
+        "Category name already exists. Please choose a different name.";
+    } else if (error.message) {
+      errorMsg = error.message;
+    }
+
+    res.status(500).render("edit-category", {
+      title: "Edit Category",
+      errors: [{ msg: errorMsg }],
+      category: {
+        id: req.params.id || req.body.category_id,
+        name: req.body.category_name,
+      },
+    });
   }
 };
 

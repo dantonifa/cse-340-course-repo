@@ -1,7 +1,7 @@
 // import the flash middleware at the top:
 import flash from "./src/middleware/flash.js";
 import session from "express-session";
-import router from "./src/routes.js";
+import staticRoute from "./src/routes.js";
 import express from "express";
 import dotenv from "dotenv";
 import path from "path";
@@ -14,7 +14,6 @@ dotenv.config();
 
 // Setup __dirname workaround required for ES Modules
 
-const staticRoutes = require("./routes/routes");
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const SESSION_SECRET = process.env.SESSION_SECRET;
@@ -78,10 +77,9 @@ app.use((req, res, next) => {
 // Middleware to parse incoming HTML form data into req.body
 app.use(express.urlencoded({ extended: true }));
 
-// Use the imported routes
-app.use("/", router);
+// Use the router for all routes
 
-app.use("/", staticRoutes);
+app.use("/", staticRoute);
 
 // Catch-all route for 404 errors
 
