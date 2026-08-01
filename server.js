@@ -1,7 +1,7 @@
 // import the flash middleware at the top:
 import flash from "./src/middleware/flash.js";
 import session from "express-session";
-import staticRoute from "./src/routes.js";
+import baseRoute from "./src/routes.js";
 import express from "express";
 import dotenv from "dotenv";
 import path from "path";
@@ -54,7 +54,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Middleware to log all incoming requests (Dejamos solo uno)
+// Middleware to log all incoming requests
 app.use((req, res, next) => {
   if (NODE_ENV === "development") {
     console.log(`${req.method} ${req.url}`);
@@ -79,7 +79,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Use the router for all routes
 
-app.use("/", staticRoute);
+// app.use("/", staticRoute);
+app.use("/", baseRoute);
 
 // Catch-all route for 404 errors
 
