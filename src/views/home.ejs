@@ -12,5 +12,8 @@
         <img src="/images/ism-pickling.webp" alt="picking vegetables">
         <img src="/images/ism-science.webp" alt="Natural Sciences Projects">
     </div>
+    <% if (isLoggedIn) { %>
+        <p><a href="/dashboard">My Dashboard</a></p>
+    <% } %>
 </main>
 <%- include('./partials/footer') %>

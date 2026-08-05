@@ -1,0 +1,34 @@
+<%- include('partials/header') %>
+
+<h1><%= title %></h1>
+
+<main>
+  <p>Review and manage all accounts registered in the service network application below.</p>
+
+  <table class="users-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email Address</th>
+        <th>Assigned Role</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (users && users.length > 0) { %>
+        <% users.forEach(user => { %>
+          <tr>
+            <td><strong><%= user.name %></strong></td>
+            <td><%= user.email %></td>
+            <td><span class="role-badge"><%= user.role %></span></td>
+          </tr>
+                <% }) %>
+      <% } else { %>
+        <tr>
+          <td colspan="3">No registered users found in the system database.</td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+</main>
+
+<%- include('partials/footer') %>

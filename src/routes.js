@@ -1,4 +1,15 @@
-//Import showNewOrganizationForm controller function
+import {
+  showUserRegistrationForm,
+  processUserRegistrationForm,
+  showLoginForm,
+  processLoginForm,
+  processLogout,
+  showDashboard,
+  requireLogin,
+  requireRole,
+  showUsersPage,
+} from "./controllers/users.js";
+
 import express from "express";
 import { showHomePage } from "./controllers/index.js";
 import {
@@ -54,7 +65,22 @@ router.post("/new-category", categoryValidation, processNewCategoryForm);
 // Post route to handle updating the category in the database
 router.post("/edit-category/:id", categoryValidation, processEditCategoryForm);
 
+/*Create a GET route for /register to call the showUserRegistrationForm 
+controller function. Create a POST route for /register to call the 
+processUserRegistrationForm controller function.*/
+
+router.get("/register", showUserRegistrationForm);
+router.post("/register", processUserRegistrationForm);
+
+// Create a GET route for /login to call the showLoginForm controller function.
+router.get("/login", showLoginForm);
+
+// Create a GET route for /logout to call the processLogout controller function.
+router.get("/logout", processLogout);
+
 // Post routes
+router.post("/login", processLoginForm);
+
 router.post(
   "/new-organization",
   organizationValidation,
@@ -88,5 +114,17 @@ router.get("/project/:projectId/assign-categories", showAssignCategoriesForm);
 
 // error-handling routes
 router.get("/test-error", testErrorPage);
+
+// Add a GET route for /login that calls the showLoginForm controller function.
+router.get("/login", showLoginForm);
+router.post("/login", processLoginForm);
+
+/*Add a new route for /dashboard that uses the requireLogin middleware
+ before calling the showDashboard controller function.*/
+
+router.get("/dashboard", requireLogin, showDashboard);
+
+// Route for registered users overview page
+router.get("/users", requireLogin, requireRole("admin"), showUsersPage);
 
 export default router;

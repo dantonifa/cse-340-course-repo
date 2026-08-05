@@ -90,3 +90,25 @@ VALUES (
         '2026-09-15',
         'Biology Lab Area'
     );
+CREATE TABLE roles (
+    role_id SERIAL PRIMARY KEY,
+    role_name VARCHAR(50) UNIQUE NOT NULL,
+    role_description TEXT
+);
+-- 1. Insert the two initial roles into the table
+insert into public.roles (role_name, role_description)
+values ('user', 'Standard user with basic access'),
+    ('admin', 'Administrator with full system access');
+-- 2. Verify that the rows were successfully inserted
+select *
+from public.roles;
+-- 3. Create the users table with a foreign key constraint to roles table
+create table public.users (
+    user_id serial primary key,
+    name varchar(100) not null,
+    email varchar (100) unique not null,
+    password_hash varchar(255) not null,
+    role_id integer not null,
+    created_at timestamp default current_timestamp,
+    constraint fk_role foreign key (role_id) references public.roles (role_id)
+);
