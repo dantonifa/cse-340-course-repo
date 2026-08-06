@@ -8,6 +8,8 @@ import {
   requireLogin,
   requireRole,
   showUsersPage,
+  handleJoinProject,
+  handleLeaveProject,
 } from "./controllers/users.js";
 
 import express from "express";
@@ -46,6 +48,9 @@ const router = express.Router();
 
 router.get("/", showHomePage);
 router.get("/organizations", showOrganizationsPage);
+
+// Route to display a specific organization's details page
+router.get("/organization/:id", showOrganizationDetailsPage);
 
 // Route for new organization page
 router.get("/new-organization", showNewOrganizationForm);
@@ -126,5 +131,9 @@ router.get("/dashboard", requireLogin, showDashboard);
 
 // Route for registered users overview page
 router.get("/users", requireLogin, requireRole("admin"), showUsersPage);
+
+// Routes for volunteering (Protected by requireLogin middleware)
+router.get("/projects/:id/join", requireLogin, handleJoinProject);
+router.get("/projects/:id/leave", requireLogin, handleLeaveProject);
 
 export default router;

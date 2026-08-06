@@ -11,15 +11,23 @@ import { getProjectsByOrganizationId } from "../models/projects.js";
 import { body, validationResult } from "express-validator";
 // Define any controller functions
 const showOrganizationDetailsPage = async (req, res) => {
-  const organizationId = req.params.id;
-  const organizationDetails = await getOrganizationDetails(organizationId);
-  const projects = await getProjectsByOrganizationId(organizationId);
-  const title = "Organization Details";
+  try {
+    const organizationId = req.params.id;
+    const organizationDetails = await getOrganizationDetails(organizationId);
+    const projects = await getProjectsByOrganizationId(organizationId);
+    const title = "Organization Details";
 
-  res.render("organizations", {
-    title,
-    organizations: organizationDetails,
-  });
+    // Render the single organization view with all required variables
+    res.render("organization", {
+      title,
+      organizationDetails,
+      projects,
+    });
+  } catch (error) {
+    console.error("Error loading organization details:", error);
+    req.flash("error", "Could not load organization details.");
+    res.redirect("/organizations");
+  }
 };
 
 const showEditOrganizationForm = async (req, res) => {

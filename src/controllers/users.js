@@ -148,6 +148,37 @@ const showUsersPage = async (req, res, next) => {
   }
 };
 
+// Handle a user joining/volunteering for a project
+async function handleJoinProject(req, res) {
+  try {
+    const projectId = req.params.id;
+    const userId = req.session.user.user_id;
+    await addVolunteer(userId, projectId);
+
+    req.flash("success", "You have successfully volunteered for this project!");
+    return res.redirect(`/projects/${projectId}`);
+  } catch (error) {
+    console.error("Error in handleJoinProject controller:", error);
+    req.flash("error", "Failed to register as a volunteer.");
+    return res.redirect("back");
+  }
+}
+// Handle a user leaving/unvolunteering from a project
+async function handleLeaveProject(req, res) {
+  try {
+    const projectId = req.params.id;
+    const userId = req.session.user.user_id;
+    await removeVolunteer(userId, projectId);
+
+    req.flash("success", "You are no longer volunteering for this project.");
+    return res.redirect(`/projects/${projectId}`);
+  } catch (error) {
+    console.error("Error in handleLeaveProject controller:", error);
+    req.flash("error", "Failed to remove your volunteer status.");
+    return res.redirect("back");
+  }
+}
+
 export {
   requireLogin,
   showDashboard,
@@ -158,4 +189,6 @@ export {
   processLogout,
   requireRole,
   showUsersPage,
+  handleJoinProject,
+  handleLeaveProject,
 };

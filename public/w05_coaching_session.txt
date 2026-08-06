@@ -1,0 +1,114 @@
+=== Week 05 Coaching Session Transcript ===
+User: David
+Coach: Learning Coach and Software Mentor
+Date: August 5, 2026 
+
+[Coach]: Welcome! Just to be clear from the start, this is a coaching session, not a test. It is perfectly okay—and even encouraged—to say 'I don't know' or 'I made a mistake.' That's the fastest way we'll learn today. Before we dive into your assignment, could you please tell me your name? 
+
+[Coach]: Hi David! It is great to have you here today. As your learning coach, I want to reiterate that this is a completely safe space to discuss your project, look at what worked, and figure out any tricky parts together. To get us started, what is the main topic or goal of the assignment you are working on this week? 
+
+[Coach]: Got it, David! We will stick to English. To kick off our first topic, could you please paste the code snippet where you handle user registration and password hashing? 
+
+[David](David):
+import db from "./db.js";
+import bcrypt from "bcrypt"; 
+
+/** 
+
+* Insert a new user into the database with the default 'user' role (role_id = 1)
+*/
+export async function createUser(name, email, password_hash) {
+// <-- Change this line
+try {
+const sql = INSERT INTO public.users (name, email, password_hash, role_id) VALUES ($1, $2, $3, 1) RETURNING *;;
+const result = await db.query(sql, [name, email, password_hash]);
+return result.rows;
+} catch (error) {
+console.error("Error inserting user into model:", error.message);
+throw error;
+}
+}
+/*Create a function named findUserByEmail that accepts an email address
+as a parameter and returns the user from the database with that email.*/
+
+const findUserByEmail = async (email) => {
+const query = SELECT user_id, name, email, password_hash, role_id FROM users WHERE email = $1; 
+
+const queryParams = [email]; 
+
+const result = await db.query(query, queryParams); 
+
+if (result.rows.length === 0) {
+return null; // User not found
+} 
+
+return result.rows;
+}; 
+
+/*Create a function named verifyPassword that accepts a plain text password
+and a hashed password as parameters. It then uses bcrypt.compare() to check
+if they match. Return true if they match, false if they do not. */ 
+
+const verifyPassword = async (password, passwordHash) => {
+return bcrypt.compare(password, passwordHash);
+}; 
+
+/*Create a function named authenticateUser that takes an email and password as parameters.
+This function should:
+Use findUserByEmail to get the user.
+If no user is found, return null.
+Use verifyPassword to check if the password is correct.
+If the password is correct, remove the password_hash from the user
+object and return the user object. If not, return null.*/ 
+
+const authenticateUser = async (email, password) => {
+const user = await findUserByEmail(email);
+if (!user) {
+return null;
+} 
+
+const isPasswordValid = await verifyPassword(password, user.password_hash);
+if (!isPasswordValid) {
+return null;
+} 
+
+const { password_hash, ...userWithoutPassword } = user;
+return userWithoutPassword;
+}; 
+
+/*The only function the controller needs access to is the authenticateUser function,
+so make sure to export it, but you do not need to export the other two functions.*/ 
+
+/** 
+
+* Fetch all registered users along with their role descriptions
+* @returns {Promise} List of user objects
+*/
+export async function getAllUsers() {
+const query = SELECT u.user_id, u.name, u.email, r.role_name AS role FROM public.users u JOIN public.roles r ON u.role_id = r.role_id ORDER BY u.name ASC;;
+// Replace 'pool' with the actual database connection name used in this file (e.g., db or pool)
+const result = await db.query(query);
+return result.rows;
+}
+
+export { authenticateUser }; 
+
+[Coach]: Thanks for sharing this code, David! It looks very clean and well-structured. Looking at your createUser function, I notice it accepts password_hash as a parameter. Where does the actual hashing process (using bcrypt.hash) take place in your application flow? 
+
+[David](David): The actual hashing process takes place in the Controller layer before data reaches the model. 
+
+[Coach]: That makes perfect sense, David! Keeping the controller responsible for handling the plain text and passing the secure hash to the model is a solid design pattern. Moving on to our second topic—Login and Sessions—could you please paste the code snippet for the controller or route handler where you call authenticateUser and manage the user's session? 
+
+[Coach]: Ah, I see it now in your server.js file! Setting res.locals.isLoggedIn globally is a fantastic way to dynamically change what elements show up in your views and navigation templates. Looking closely at this block, it sets the variable and then calls next(), which lets the request keep moving forward regardless of whether the user is logged in or not. If a guest who isn't logged in tries to visit a private URL like /dashboard, how or where does your application currently block them and redirect them back to the login page? 
+
+[David](David): in the file src/controllers/users.js 
+
+[Coach]: Excellent work, David! I see it right there on lines 95-101 inside your src/controllers/users.js file: your requireLogin function perfectly checks for the session and user, adds a flash error message, and redirects unauthorized traffic back to /login. Now that you have written this great piece of protection middleware, how or where do you apply requireLogin so that it actively guards private routes like /dashboard before they load? 
+
+[David](David): The requireLogin middleware actively guards my private routes by being placed directly inside the route definition in src/routes.js, sitting right between the URL path string and the final controller function. 
+
+[Coach]: That is a textbook implementation, David! Placing it right between the path and the controller function creates a perfect guard rail for those private routes. We have successfully covered registration, sessions, and route protection. Let's move to our fourth and final topic: Role-based Navigation and Access Control. How are you currently using a user's assigned role (like role_id or role_name) to change what links they see in the navigation bar or to block them from accessing specific admin pages? 
+
+[David](David): The application handles role-based control in two distinct stages: UI conditional rendering inside views to toggle navigation links, and route-level middleware to hard-block unauthorized access attempts. When a user logs in, their profile data—including properties like role_id or role_name—is attached to the session (req.session.user). The application maps these properties to res.locals so that templating engines can dynamically toggle navigation menus. Inside HTML layout/navigation file, the template checks userRole before rendering admin-only elements. 
+
+### [Coach]: [Session Wrap-up and summary evaluation]

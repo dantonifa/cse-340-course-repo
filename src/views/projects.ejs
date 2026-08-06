@@ -15,6 +15,17 @@
         <p><strong>Categories:</strong> <%= project.categories ? project.categories.join(', ') : 'None' %></p>
         <p><a href="/project/<%= project.project_id %>/assign-categories">Edit Categories</a></p>
 
+        <!-- Volunteer Action Section -->
+        <% if (locals.user) { %>
+            <div class="volunteer-actions" style="margin-top: 10px;">
+                <% if (project.isVolunteering) { %>
+                    <span class="status-badge" style="color: green; font-weight: bold; display: block; margin-bottom: 5px;">✓ You are volunteering</span>
+                    <a href="/projects/<%= project.project_id %>/leave" class="btn-leave" style="color: red;">Remove Yourself as Volunteer</a>
+                <% } else { %>
+                    <a href="/projects/<%= project.project_id %>/join" class="btn-join" style="color: blue; font-weight: bold;">Volunteer for this Project</a>
+                <% } %>
+            </div>
+        <% } %>
 
       </li>
     <% }) %>

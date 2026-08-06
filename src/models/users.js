@@ -90,4 +90,44 @@ export async function getAllUsers() {
   return result.rows;
 }
 
+// Add a volunteer to a project
+export async function addVolunteer(userId, projectId) {
+  try {
+    const sql = `INSERT INTO public.project_volunteer (user_id, project_id) VALUES ($1, $2) RETURNING *;`;
+    const result = await db.query(sql, [userId, projectId]);
+    return result.rows;
+  } catch (error) {
+    console.error("Error adding volunteer:", error.message);
+    throw error;
+  }
+}
+
+// Remove a volunteer from a project
+export async function removeVolunteer(userId, projectId) {
+  try {
+    const sql = `DELETE FROM public.project_volunteer WHERE user_id = $1 AND project_id = $2 RETURNING *;`;
+    const result = await db.query(sql, [userId, projectId]);
+    return result.rows;
+  } catch (error) {
+    console.error("Error removing volunteer:", error.message);
+    throw error;
+  }
+}
+
+// Retrieve all projects a specific user has volunteered for
+export async function getProjectsByVolunteer(userId) {
+  try {
+    const sql = `
+            SELECT p.* FROM public.service_projects p
+            JOIN public.project_volunteer pv ON p.project_id = pv.project_id
+            WHERE pv.user_id = $1;
+        `;
+    const result = await db.query(sql, [userId]);
+    return result.rows;
+  } catch (error) {
+    console.error("Error fetching volunteered projects:", error.message);
+    throw error;
+  }
+}
+
 export { authenticateUser };

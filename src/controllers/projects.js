@@ -9,6 +9,8 @@ import { updateCategoryAssignments } from "../models/categories.js";
 
 import { body, validationResult } from "express-validator";
 
+import { getProjectsByVolunteer } from "../models/users.js";
+
 export const projectValidation = [
   body("title")
     .trim()
@@ -107,11 +109,34 @@ const processNewProjectForm = async (req, res) => {
 
 // Define any controller functions
 const showProjectsPage = async (req, res) => {
-  // Pass 5 as the number of projects to retrieve
-  const projects = await getUpcomingProjects(5);
-  const title = "Service Projects";
+  try {
+    const title = "Service Projects";
+    const projects = await getUpcomingProjects();
 
-  res.render("projects", { title, projects });
+    // Check if a user is logged in
+    if (req.session && req.session.user) {
+      const userId = req.session.user.user_id;
+
+      // Fetch all projects this user has volunteered for
+      const volunteeredProjects = await getProjectsByVolunteer(userId);
+
+      // Create a set of project IDs for quick lookup
+      const volunteeredIds = new Set(
+        volunteeredProjects.map((p) => p.project_id),
+      );
+
+      // Map through upcoming projects and mark the volunteered ones
+      projects.forEach((project) => {
+        project.isVolunteering = volunteeredIds.has(project.project_id);
+      });
+    }
+
+    res.render("projects", { title, projects });
+  } catch (error) {
+    console.error("Error in showProjectsPage:", error);
+    req.flash("error", "An error occurred while loading projects.");
+    res.redirect("/");
+  }
 };
 
 //provide an export named 'processAssignCategoriesForm'.

@@ -112,3 +112,10 @@ create table public.users (
     created_at timestamp default current_timestamp,
     constraint fk_role foreign key (role_id) references public.roles (role_id)
 );
+CREATE TABLE IF NOT EXISTS project_volunteer (
+    user_id INT NOT NULL,
+    project_id INT NOT NULL,
+    PRIMARY KEY (user_id, project_id),
+    FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (project_id) REFERENCES public.service_projects(project_id) ON DELETE CASCADE
+);
