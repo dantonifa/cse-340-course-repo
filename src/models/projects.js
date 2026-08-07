@@ -111,4 +111,5 @@ export {
   getProjectsByOrganizationId,
   getUpcomingProjects,
   createProject,
+  getProjectDetails,
 };

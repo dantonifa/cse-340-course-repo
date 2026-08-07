@@ -29,6 +29,7 @@ import {
   showNewProjectForm,
   processNewProjectForm,
   projectValidation,
+  showProjectDetailsPage,
 } from "./controllers/projects.js";
 
 import {
@@ -57,6 +58,12 @@ router.get("/new-organization", showNewOrganizationForm);
 
 // Route for edit organization page
 router.get("/edit-organization/:id", showEditOrganizationForm);
+
+/*Create a new route for /project/[id] that will handle requests for the service project details page
+ for a single service project as specified by the [id] parameter. This route should use the new
+ showProjectDetailsPage controller function you just created. */
+
+router.get("/project/:id", showProjectDetailsPage);
 
 // Route to display the new category form
 router.get("/new-category", showNewCategoryForm);
