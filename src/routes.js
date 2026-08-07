@@ -63,7 +63,7 @@ router.get("/edit-organization/:id", showEditOrganizationForm);
  for a single service project as specified by the [id] parameter. This route should use the new
  showProjectDetailsPage controller function you just created. */
 
-router.get("/project/:id", showProjectDetailsPage);
+router.get("/project/:projectId", showProjectDetailsPage);
 
 // Route to display the new category form
 router.get("/new-category", showNewCategoryForm);
@@ -119,6 +119,7 @@ router.get("/projects", showProjectsPage);
 router.get("/new-project", showNewProjectForm);
 router.post("/new-project", projectValidation, processNewProjectForm);
 router.get("/categories", showCategoriesPage);
+router.get("/project/:projectId", showProjectDetailsPage);
 
 /*Add a GET route for /project/:projectId/assign-categories that calls the 
 showAssignCategoriesForm controller function.*/

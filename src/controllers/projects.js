@@ -184,7 +184,7 @@ export const processAssignCategoriesForm = async (req, res) => {
 // Call the getAllCategories model function to retrieve a list of all categories from the database.
 // Call the getCategoriesByServiceProjectId model function to retrieve the categories currently assigned to the specified project.
 // Render the assign-categories view, passing in the project details, all categories, and the assigned categories.
-export const showAssignCategoriesForm = async (req, res) => {
+const showAssignCategoriesForm = async (req, res) => {
   const { projectId } = req.params;
 
   // Call the model function which directly returns a single project object

@@ -81,7 +81,7 @@ const createProject = async (
 // including the project ID, title, description, location, date,
 // organization ID, and organization name.
 
-export async function getProjectDetails(projectId) {
+async function getProjectDetails(projectId) {
   try {
     const sql = `
       SELECT 
