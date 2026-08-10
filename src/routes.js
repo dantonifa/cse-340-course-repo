@@ -30,6 +30,8 @@ import {
   handleAddVolunteer,
   handleRemoveVolunteer,
   showProjectDetailsPage,
+  showEditProjectPage,
+  processUpdateProject,
 } from "./controllers/projects.js";
 
 import {
@@ -65,6 +67,9 @@ router.get("/edit-organization/:id", showEditOrganizationForm);
 
 router.get("/project/:projectId", showProjectDetailsPage);
 router.get("/projects/:projectId", showProjectDetailsPage);
+
+router.get("/projects/edit/:projectId", showEditProjectPage);
+router.post("/projects/edit/:projectId", processUpdateProject);
 
 // Route to display the new category form
 router.get("/new-category", showNewCategoryForm);

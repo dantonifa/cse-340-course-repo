@@ -6,6 +6,7 @@ import {
   addVolunteer,
   removeVolunteer,
   getProjectsByVolunteer,
+  updateProjectDetails,
 } from "../models/projects.js";
 
 import {
@@ -278,6 +279,48 @@ async function handleRemoveVolunteer(req, res, next) {
   }
 }
 
+// Render the edit project form pre-populated with data
+const showEditProjectPage = async (req, res, next) => {
+  try {
+    const projectId = req.params.projectId;
+
+    // Fetch project details and full organization list
+    const projectData = await getProjectDetails(projectId);
+    const organizationList = await getAllOrganizations();
+
+    res.render("edit-project", {
+      title: "Edit " + projectData.title,
+      project: projectData,
+      organizations: organizationList,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Process the project update in the database
+const processUpdateProject = async (req, res, next) => {
+  try {
+    const projectId = req.params.projectId;
+    const { title, description, location, date, organization_id } = req.body;
+
+    // Execute update query through the model function
+    await updateProjectDetails(
+      projectId,
+      title,
+      description,
+      location,
+      date,
+      organization_id,
+    );
+
+    req.flash("success", "Project updated successfully.");
+    res.redirect("/projects");
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   handleAddVolunteer,
   handleRemoveVolunteer,
@@ -292,4 +335,6 @@ export {
   addVolunteer,
   removeVolunteer,
   getProjectsByVolunteer,
+  showEditProjectPage,
+  processUpdateProject,
 };

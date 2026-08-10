@@ -1,0 +1,48 @@
+<%- include('partials/header') %>
+
+<main>
+    <h1><%= title %></h1>
+
+    <% if (locals.messages && messages.error) { %>
+        <div class="alert alert-danger"><%= messages.error %></div>
+    <% } %>
+
+    <form action="/projects/edit/<%= project.project_id %>" method="POST" style="max-width: 500px; margin-top: 20px;">
+        <div style="margin-bottom: 15px;">
+            <label style="display:block; font-weight:bold;">Project Title</label>
+            <input type="text" name="title" value="<%= project.title %>" required style="width:100%; padding:8px;">
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="display:block; font-weight:bold;">Description</label>
+            <textarea name="description" required style="width:100%; padding:8px; height:100px;"><%= project.description %></textarea>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="display:block; font-weight:bold;">Location</label>
+            <input type="text" name="location" value="<%= project.location %>" required style="width:100%; padding:8px;">
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="display:block; font-weight:bold;">Date</label>
+            <input type="date" name="date" value="<%= project.date ? new Date(project.date).toISOString().split('T')[0] : '' %>" required style="width:100%; padding:8px;">
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="display:block; font-weight:bold;">Organization</label>
+            <select name="organization_id" required style="width:100%; padding:8px;">
+                <% organizations.forEach(org => { %>
+                    <option value="<%= org.organization_id %>" <%= org.organization_id === project.organization_id ? 'selected' : '' %>>
+                        <%= org.organization_name %>
+                    </option>
+                <% }) %>
+            </select>
+        </div>
+
+        <button type="submit" style="background-color: #27ae60; color: white; padding: 10px 15px; border: none; cursor: pointer; border-radius: 4px;">
+            Update Project
+        </button>
+    </form>
+</main>
+
+<%- include('partials/footer') %>

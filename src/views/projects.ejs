@@ -16,6 +16,7 @@
                 <p><strong>Location:</strong> <%= project.location %></p>
                 <p><strong>Organized by:</strong> <%= project.organization_name %></p>
                 <p><strong>Categories:</strong> <%= project.categories ? project.categories.join(', ') : 'None' %></p>
+                <a href="/projects/edit/<%= project.project_id %>" style="color: #e67e22; display: block; margin-bottom: 5px; font-weight: bold;">Edit Project Details</a>
                 <a href="/project/<%= project.project_id %>/assign-categories">Edit Categories</a>
                 <!-- Volunteer Action Section -->
         <% if (locals.user) { %>

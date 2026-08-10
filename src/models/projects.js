@@ -32,7 +32,8 @@ const getProjectsByOrganizationId = async (organizationId) => {
  * *************************** */
 const getUpcomingProjects = async (number_of_projects = 3) => {
   try {
-    const query = "SELECT * FROM public.service_projects LIMIT $1";
+    const query =
+      "SELECT * FROM public.service_projects ORDER BY project_id DESC LIMIT $1";
     const result = await db.query(query, [number_of_projects]);
     return result.rows;
   } catch (error) {
@@ -148,6 +149,36 @@ const getProjectsByVolunteer = async (userId) => {
   }
 };
 
+// Execute the UPDATE SQL command for a project record
+const updateProjectDetails = async (
+  projectId,
+  title,
+  description,
+  location,
+  date,
+  organizationId,
+) => {
+  try {
+    const sql = `
+            UPDATE public.service_projects 
+            SET title = $2, description = $3, location = $4, date = $5, organization_id = $6 
+            WHERE project_id = $1 
+            RETURNING *`;
+    const result = await db.query(sql, [
+      projectId,
+      title,
+      description,
+      location,
+      date,
+      organizationId,
+    ]);
+    return result.rows;
+  } catch (error) {
+    console.error("Error in updateProjectDetails model:", error);
+    throw error;
+  }
+};
+
 export {
   getProjectsByOrganizationId,
   getUpcomingProjects,
@@ -156,4 +187,5 @@ export {
   addVolunteer,
   removeVolunteer,
   getProjectsByVolunteer,
+  updateProjectDetails,
 };
