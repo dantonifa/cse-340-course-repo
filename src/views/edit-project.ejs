@@ -31,13 +31,16 @@
         <div style="margin-bottom: 15px;">
             <label style="display:block; font-weight:bold;">Organization</label>
             <select name="organization_id" required style="width:100%; padding:8px;">
+                <option value="" disabled selected>Select an organization</option>
+
                 <% organizations.forEach(org => { %>
                     <option value="<%= org.organization_id %>" <%= org.organization_id === project.organization_id ? 'selected' : '' %>>
-                        <%= org.organization_name %>
+                        <%= org.name %>
                     </option>
                 <% }) %>
             </select>
         </div>
+
 
         <button type="submit" style="background-color: #27ae60; color: white; padding: 10px 15px; border: none; cursor: pointer; border-radius: 4px;">
             Update Project
