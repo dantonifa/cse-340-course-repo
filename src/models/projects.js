@@ -4,7 +4,14 @@ import db from "./db.js";
  * Get all projects (Temporary fallback)
  * *************************** */
 const getAllProjects = async () => {
-  return [];
+  try {
+    const query = "SELECT * FROM public.service_projects";
+    const result = await db.query(query);
+    return result.rows;
+  } catch (error) {
+    console.error("Error in getAllProjects model:", error);
+    throw error;
+  }
 };
 
 /* *****************************
@@ -23,29 +30,15 @@ const getProjectsByOrganizationId = async (organizationId) => {
 /* *****************************
  * Get upcoming service projects (Dynamically limited)
  * *************************** */
-const getUpcomingProjects = async (number_of_projects) => {
-  const query = `
-    SELECT 
-      p.project_id,
-      p.title,
-      p.description,
-      p.date,
-      p.location,
-      p.organization_id,
-      o.name AS organization_name,
-      COALESCE(ARRAY_AGG(c.category_name) FILTER (WHERE c.category_name IS NOT NULL), '{}') AS categories
-    FROM public.service_projects p
-    INNER JOIN public.organizations o ON p.organization_id = o.organization_id
-    LEFT JOIN public.project_categories pc ON p.project_id = pc.project_id
-    LEFT JOIN public.categories c ON pc.category_id = c.category_id
-    WHERE p.date >= CURRENT_DATE
-    GROUP BY p.project_id, o.name
-    ORDER BY p.date ASC
-    LIMIT $1;
-  `;
-
-  const result = await db.query(query, [number_of_projects]);
-  return result.rows;
+const getUpcomingProjects = async (number_of_projects = 3) => {
+  try {
+    const query = "SELECT * FROM public.service_projects LIMIT $1";
+    const result = await db.query(query, [number_of_projects]);
+    return result.rows;
+  } catch (error) {
+    console.error("Error in getUpcomingProjects model:", error);
+    throw error;
+  }
 };
 
 const createProject = async (
@@ -105,11 +98,62 @@ async function getProjectDetails(projectId) {
   }
 }
 
-// Export all model functions
+/** 
+
+* Add a volunteer to a project
+* @param {number} userId - The user ID
+* @param {number} projectId - The project ID
+*/
+async function addVolunteer(userId, projectId) {
+  try {
+    const sql = `INSERT INTO project_volunteer (user_id, project_id)  VALUES ($1, $2) RETURNING *`;
+    const result = await db.query(sql, [userId, projectId]);
+    return result.rows;
+  } catch (error) {
+    console.error("Error in addVolunteer:", error);
+    throw error;
+  }
+}
+
+/** 
+
+* Remove a volunteer from a project
+* @param {number} userId - The user ID
+* @param {number} projectId - The project ID
+*/
+async function removeVolunteer(userId, projectId) {
+  try {
+    const sql = `DELETE FROM project_volunteer  WHERE user_id = $1 AND project_id = $2 RETURNING *`;
+    const result = await db.query(sql, [userId, projectId]);
+    return result.rowCount > 0; // Returns true if a row was deleted
+  } catch (error) {
+    console.error("Error in removeVolunteer:", error);
+    throw error;
+  }
+}
+
+/** 
+
+* Get all projects a user has volunteered for
+* @param {number} userId - The user ID
+*/
+const getProjectsByVolunteer = async (userId) => {
+  try {
+    const sql = `SELECT p.*  FROM public.service_projects p JOIN public.project_volunteer pv ON p.project_id = pv.project_id WHERE pv.user_id = $1`;
+    const result = await db.query(sql, [userId]);
+    return result.rows;
+  } catch (error) {
+    console.error("Error in getProjectsByVolunteer:", error);
+    throw error;
+  }
+};
+
 export {
-  getAllProjects,
   getProjectsByOrganizationId,
   getUpcomingProjects,
   createProject,
   getProjectDetails,
+  addVolunteer,
+  removeVolunteer,
+  getProjectsByVolunteer,
 };

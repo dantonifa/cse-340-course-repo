@@ -3,7 +3,11 @@ import {
   getUpcomingProjects,
   createProject,
   getProjectDetails,
+  addVolunteer,
+  removeVolunteer,
+  getProjectsByVolunteer,
 } from "../models/projects.js";
+
 import {
   getAllCategories,
   getCategoriesByServiceProjectId,
@@ -17,8 +21,6 @@ import { getAllOrganizations } from "../models/organizations.js";
 import { updateCategoryAssignments } from "../models/categories.js";
 
 import { body, validationResult } from "express-validator";
-
-import { getProjectsByVolunteer } from "../models/users.js";
 
 /*Create a constant named, NUMBER_OF_UPCOMING_PROJECTS at the top of this file, 
 and set its value to 5. Then, pass that constant to the model function. */
@@ -123,40 +125,67 @@ const showProjectDetailsPage = async (req, res) => {
   const { projectId } = req.params;
   try {
     const project = await getProjectDetails(projectId);
-    res.render("project", { title: project.title, project });
+
+    // 1. Check if the user is securely authenticated
+    const userId = req.session?.user?.user_id;
+    let isVolunteering = false;
+
+    // 2. If authenticated, fetch their volunteered projects to determine status
+    if (userId) {
+      const volunteeredProjects = await getProjectsByVolunteer(userId);
+
+      // 3. Verify if this current project ID matches any they signed up for
+      isVolunteering = volunteeredProjects.some(
+        (p) => p.project_id == projectId,
+      );
+    }
+
+    // 4. Safely render the view template passing all required local variables
+    res.render("project", {
+      title: project.title,
+      project,
+      isVolunteering,
+    });
   } catch (error) {
     req.flash("error", "Failed to load project details.");
     res.redirect("/projects");
   }
 };
 
-// Define any controller functions
-const showProjectsPage = async (req, res) => {
+/* ******************************************
+ *  Build projects page view (Step 3 & 5)
+ * ****************************************** */
+const showProjectsPage = async (req, res, next) => {
   try {
-    const title = "Service Projects";
-    const projects = await getUpcomingProjects(NUMBER_OF_UPCOMING_PROJECTS);
+    const title = "Projects";
 
-    // Check if a user is logged in
+    // 1. Fetch all upcoming projects (Requirement 2)
+    const projects = await getUpcomingProjects(5);
+
+    // 2. Initialize an empty array by default for guest visitors
+    let volunteeredProjectIds = [];
+
+    // 3. Requirement 3: Securely check if the user is authenticated
     if (req.session && req.session.user) {
       const userId = req.session.user.user_id;
 
-      // Fetch all projects this user has volunteered for
+      // Fetch all projects assigned to this specific volunteer (Requirement 5)
       const volunteeredProjects = await getProjectsByVolunteer(userId);
 
-      // Create a set of project IDs for quick lookup
-      const volunteeredIds = new Set(
-        volunteeredProjects.map((p) => p.project_id),
+      // Extract only the IDs safely to use as a lookup array in the view template
+      volunteeredProjectIds = (volunteeredProjects || []).map(
+        (p) => p.project_id,
       );
-
-      // Map through upcoming projects and mark the volunteered ones
-      projects.forEach((project) => {
-        project.isVolunteering = volunteeredIds.has(project.project_id);
-      });
     }
 
-    res.render("projects", { title, projects });
+    // 4. Render the template view passing all necessary local variables
+    res.render("projects", {
+      title,
+      projects,
+      volunteeredProjectIds,
+    });
   } catch (error) {
-    console.error("Error in showProjectsPage:", error);
+    console.error("Error in showProjectsPage controller:", error);
     req.flash("error", "An error occurred while loading projects.");
     res.redirect("/");
   }
@@ -164,7 +193,7 @@ const showProjectsPage = async (req, res) => {
 
 //provide an export named 'processAssignCategoriesForm'.
 
-export const processAssignCategoriesForm = async (req, res) => {
+const processAssignCategoriesForm = async (req, res) => {
   const { projectId } = req.params;
   const { categoryIds } = req.body; // Assuming categoryIds is an array of selected category IDs
 
@@ -178,25 +207,22 @@ export const processAssignCategoriesForm = async (req, res) => {
   }
 };
 
-//Create a new function named showAssignCategoriesForm that takes req and res as parameters. This function should do the following:
+//Create a new function named showAssignCategoriesForm that takes req and res as parameters.
+// This function should do the following:
 // Extract the projectId from req.params.
 // Call the getProjectDetails model function to retrieve the details of the specified project.
 // Call the getAllCategories model function to retrieve a list of all categories from the database.
-// Call the getCategoriesByServiceProjectId model function to retrieve the categories currently assigned to the specified project.
-// Render the assign-categories view, passing in the project details, all categories, and the assigned categories.
+// Call the getCategoriesByServiceProjectId model function to retrieve the categories currently
+// assigned to the specified project.
+// Render the assign-categories view, passing in the project details, all categories,
+// and the assigned categories.
 const showAssignCategoriesForm = async (req, res) => {
   const { projectId } = req.params;
 
-  // Call the model function which directly returns a single project object
   const project = await getProjectDetails(projectId);
-
-  // Extract the first project object from the database result rows array
-
   const allCategories = await getAllCategories();
   const assignedCategoriesRows =
     await getCategoriesByServiceProjectId(projectId);
-
-  // Map the database rows into a flat array of primitive ID integers
   const assignedCategoryIds = assignedCategoriesRows.map(
     (row) => row.category_id,
   );
@@ -210,11 +236,60 @@ const showAssignCategoriesForm = async (req, res) => {
   });
 };
 
-// Export any controller functions
+// Import your project model functions at the top of the file if not already present
+// const projectModel = require("../models/projects");
+
+/** 
+
+* Render project details and check volunteer status
+*/
+// Handle adding a volunteer to a project
+async function handleAddVolunteer(req, res, next) {
+  try {
+    // Read parameter directly from the route path structure
+    const projectId = req.params.projectId;
+
+    const userId = req.session?.user?.user_id || res.locals?.user?.user_id;
+
+    await addVolunteer(userId, projectId);
+
+    // Redirect back to the clean projects directory list view
+    res.redirect("/projects/" + projectId);
+  } catch (error) {
+    console.error("Error in handleAddVolunteer controller:", error);
+    next(error);
+  }
+}
+
+// Handle removing a volunteer from a project
+async function handleRemoveVolunteer(req, res, next) {
+  try {
+    // Read parameter directly from the route path structure
+    const projectId = req.params.projectId;
+    const userId = req.session?.user?.user_id || res.locals?.user?.user_id;
+
+    await removeVolunteer(userId, projectId);
+
+    // Redirect back to the clean projects directory list view
+    res.redirect("/dashboard");
+  } catch (error) {
+    console.error("Error in handleRemoveVolunteer controller:", error);
+    next(error);
+  }
+}
+
 export {
+  handleAddVolunteer,
+  handleRemoveVolunteer,
   showProjectsPage,
   showNewProjectForm,
   processNewProjectForm,
   showProjectDetailsPage,
   showAssignCategoriesForm,
+  processAssignCategoriesForm,
+  getUpcomingProjects,
+  createProject,
+  addVolunteer,
+  removeVolunteer,
+  getProjectsByVolunteer,
 };

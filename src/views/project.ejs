@@ -14,5 +14,26 @@ The URL for this link should be /organization/[id], where [id] is the ID of the 
     <p><strong>Date:</strong> <%= new Date(project.date).toLocaleDateString() %></p>
     <p><strong>Location:</strong> <%= project.location %></p>
     <p><strong>Organized by:</strong> <a href="/organization/<%= project.organization_id %>"><%= project.organization_name %></a></p>
-</main>
+    
+        <div class="volunteer-actions" style="margin-top: 10px;">
+            <% if (isVolunteering) { %>
+            
+            <span class="status-badge" style="color: green; font-weight: bold; display: block; margin-bottom: 5px;">
+                ✓ You are volunteering for this project
+            </span>
+            <form action="/projects/volunteer/remove/<%= project.project_id %>" method="POST">
+                <button type="submit" class="btn-leave" style="color: red; background: none; border: none; padding: 0; font: inherit; cursor: pointer;">
+                    Remove Yourself as Volunteer
+                </button>
+            </form>
+            <% } else { %>
+                <form action="/projects/volunteer/add/<%= project.project_id %>" method="POST">
+                    <button type="submit" class="btn-join" style="color: blue; font-weight: bold; background: none; border: none; padding: 0; font: inherit; cursor: pointer;">
+                        Volunteer for this Project
+                    </button>
+                </form>
+            <% } %>
+
+        </div>
+        </main>
 <%- include('partials/footer') %>

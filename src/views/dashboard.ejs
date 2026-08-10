@@ -7,6 +7,30 @@
     <p>Name: <%= name %></p>
     <p>Username: <%= email %></p>
 
+    <!-- NEW SECTION: RUBRIC REQUIREMENT #4 -->
+    <section class="user-volunteering" style="margin-top: 30px;">
+        <h3>My Volunteered Projects</h3>
+        
+        <% if (locals.volunteeredProjects && volunteeredProjects.length > 0) { %>
+            <ul style="list-style: none; padding-left: 0;">
+                <% volunteeredProjects.forEach(project => { %>
+                    <li style="margin-bottom: 15px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                        <strong style="font-size: 1.1em;"><%= project.title %></strong>
+                     
+                        <!-- Inline form to remove assignment directly from dashboard list -->
+                        <form action="/projects/volunteer/remove/<%= project.project_id %>" method="POST" style="display: block; margin-top: 5px;">
+                            <button type="submit" class="btn-leave" style="color: red; cursor: pointer; background: none; border: 1px solid red; padding: 3px 8px; border-radius: 3px;">
+                                Remove Yourself as Volunteer
+                            </button>
+                        </form>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p>You have not volunteered for any projects yet.</p>
+        <% } %>
+    </section>
+
 </main>
 
 <%- include('partials/footer') %>

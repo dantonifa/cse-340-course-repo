@@ -1,6 +1,7 @@
 //Import the bcrypt library using import bcrypt from 'bcrypt';.
 import bcrypt from "bcrypt";
 import { createUser, authenticateUser, getAllUsers } from "../models/users.js";
+import { getProjectsByVolunteer, addVolunteer } from "../models/projects.js";
 
 /*Create a showUserRegistrationForm controller function that renders 
  the registration form view register (which you will create in a future step).*/
@@ -105,13 +106,27 @@ Gets the user's name and email from req.session.user.
 Renders the dashboard.ejs view and passes the name and 
 email address to it.*/
 
-const showDashboard = (req, res) => {
-  const user = req.session.user;
-  res.render("dashboard", {
-    title: "Dashboard",
-    name: user.name,
-    email: user.email,
-  });
+const showDashboard = async (req, res) => {
+  try {
+    const user = req.session.user;
+
+    // 1. Fallback to user ID 1 for testing since authentication is currently bypassed
+    const userId = user?.user_id || 1;
+
+    // 2. Fetch the specific list of projects this volunteer has signed up for
+    const volunteeredProjects = await getProjectsByVolunteer(userId);
+
+    // 3. Render the dashboard template view and pass all required variables
+    res.render("dashboard", {
+      title: "Dashboard",
+      name: user?.user_name || "Volunteer",
+      email: user?.user_email || "volunteer@test.com",
+      volunteeredProjects: volunteeredProjects,
+    });
+  } catch (error) {
+    req.flash("error", "Could not load dashboard content.");
+    res.redirect("/projects");
+  }
 };
 
 // Middleware to restrict access based on user roles

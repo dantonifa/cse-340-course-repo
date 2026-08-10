@@ -17,23 +17,35 @@
                 <p><strong>Organized by:</strong> <%= project.organization_name %></p>
                 <p><strong>Categories:</strong> <%= project.categories ? project.categories.join(', ') : 'None' %></p>
                 <a href="/project/<%= project.project_id %>/assign-categories">Edit Categories</a>
-        <!-- Volunteer Action Section -->
+                <!-- Volunteer Action Section -->
         <% if (locals.user) { %>
             <div class="volunteer-actions" style="margin-top: 10px;">
-                <% if (project.isVolunteering) { %>
-                    <span class="status-badge" style="color: green; font-weight: bold; display: block; margin-bottom: 5px;">✓ You are volunteering</span>
-                    <a href="/project/<%= project.project_id %>/leave" class="btn-leave" style="color: red;">Remove Yourself as Volunteer</a>
+                <!-- 1. Change line 23 to use your volunteeredProjectIds array lookup -->
+                <% if (volunteeredProjectIds.includes(project.project_id)) { %>
+                <span class="status-badge" style="color: green; font-weight: bold; display: block; margin-bottom: 5px;">
+                    ✓ You are volunteering for this project
+                </span>
+                <form action="/projects/volunteer/remove/<%= project.project_id %>" method="POST">
+                    <button type="submit" class="btn-leave" style="color: red; background: none; border: none; padding: 0; font: inherit; cursor: pointer;">
+                        Remove Yourself as Volunteer
+                    </button>
+                </form>
                 <% } else { %>
-                    <a href="/project/<%= project.project_id %>/join" class="btn-join" style="color: blue; font-weight: bold;">Volunteer for this Project</a>
+                    <form action="/projects/volunteer/add/<%= project.project_id %>" method="POST">
+                        <button type="submit" class="btn-join" style="color: blue; font-weight: bold; background: none; border: none; padding: 0; font: inherit; cursor: pointer;">
+                            Volunteer for this Project
+                        </button>
+                    </form>
                 <% } %>
+
             </div>
         <% } %>
-
       </li>
     <% }) %>
   <% } else { %>
     <li>No upcoming projects found.</li>
   <% } %>
+
 </ul>
 
 </main>
