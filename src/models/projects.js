@@ -75,19 +75,20 @@ const createProject = async (
 // including the project ID, title, description, location, date,
 // organization ID, and organization name.
 
-async function getProjectDetails(projectId) {
+// Function to get detailed information about a single project
+const getProjectDetails = async (projectId) => {
   try {
     const sql = `
       SELECT 
-        p.project_id, 
-        p.title, 
-        p.description, 
-        p.location, 
-        p.date, 
-        p.organization_id, 
+        p.project_id,
+        p.title,
+        p.description,
+        p.location,
+        p.date,
+        p.organization_id,
         o.name AS organization_name
       FROM public.service_projects p
-      INNER JOIN public.organizations o 
+      INNER JOIN public.organizations o
         ON p.organization_id = o.organization_id
       WHERE p.project_id = $1
     `;
@@ -97,24 +98,24 @@ async function getProjectDetails(projectId) {
     console.error("Error fetching project details by ID:", error);
     throw error;
   }
-}
+};
 
-/** 
-
-* Add a volunteer to a project
-* @param {number} userId - The user ID
-* @param {number} projectId - The project ID
-*/
-async function addVolunteer(userId, projectId) {
+/**
+ * Add a volunteer to a project
+ * @param {number} userId - The user ID
+ * @param {number} projectId - The project ID
+ */
+const addVolunteer = async (userId, projectId) => {
   try {
-    const sql = `INSERT INTO project_volunteer (user_id, project_id)  VALUES ($1, $2) RETURNING *`;
+    const sql =
+      "INSERT INTO project_volunteer (user_id, project_id) VALUES ($1, $2)";
     const result = await db.query(sql, [userId, projectId]);
     return result.rows;
   } catch (error) {
-    console.error("Error in addVolunteer:", error);
+    console.error("Error adding volunteer to project:", error);
     throw error;
   }
-}
+};
 
 /** 
 
@@ -122,22 +123,22 @@ async function addVolunteer(userId, projectId) {
 * @param {number} userId - The user ID
 * @param {number} projectId - The project ID
 */
-async function removeVolunteer(userId, projectId) {
+const removeVolunteer = async (userId, projectId) => {
   try {
-    const sql = `DELETE FROM project_volunteer  WHERE user_id = $1 AND project_id = $2 RETURNING *`;
+    const sql =
+      "DELETE FROM project_volunteer WHERE user_id = $1 AND project_id = $2 RETURNING *";
     const result = await db.query(sql, [userId, projectId]);
     return result.rowCount > 0; // Returns true if a row was deleted
   } catch (error) {
     console.error("Error in removeVolunteer:", error);
     throw error;
   }
-}
+};
 
-/** 
-
-* Get all projects a user has volunteered for
-* @param {number} userId - The user ID
-*/
+/**
+ * Get all projects a user has volunteered for
+ * @param {number} userId - The user ID
+ */
 const getProjectsByVolunteer = async (userId) => {
   try {
     const sql = `SELECT p.*  FROM public.service_projects p JOIN public.project_volunteer pv ON p.project_id = pv.project_id WHERE pv.user_id = $1`;

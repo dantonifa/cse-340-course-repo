@@ -7,8 +7,8 @@ import {
   getCategoriesByServiceProjectId,
   updateCategoryAssignments,
   getCategoryById,
-  createCategory, // <-- Add this
-  updateCategory, // <-- Add this
+  createCategory,
+  updateCategory,
 } from "../models/categories.js";
 
 import { getProjectDetails } from "../models/projects.js";

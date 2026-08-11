@@ -35,7 +35,7 @@ location: trim, ensure not empty, length less than 200.
 date: ensure not empty, valid date format.
 organizationId: ensure not empty, valid integer.*/
 
-export const projectValidation = [
+const projectValidation = [
   body("title")
     .trim()
     .notEmpty()
@@ -245,11 +245,10 @@ const showAssignCategoriesForm = async (req, res) => {
 * Render project details and check volunteer status
 */
 // Handle adding a volunteer to a project
-async function handleAddVolunteer(req, res, next) {
+const handleAddVolunteer = async (req, res, next) => {
   try {
     // Read parameter directly from the route path structure
     const projectId = req.params.projectId;
-
     const userId = req.session?.user?.user_id || res.locals?.user?.user_id;
 
     await addVolunteer(userId, projectId);
@@ -260,15 +259,14 @@ async function handleAddVolunteer(req, res, next) {
     console.error("Error in handleAddVolunteer controller:", error);
     next(error);
   }
-}
+};
 
 // Handle removing a volunteer from a project
-async function handleRemoveVolunteer(req, res, next) {
+const handleRemoveVolunteer = async (req, res, next) => {
   try {
     // Read parameter directly from the route path structure
     const projectId = req.params.projectId;
     const userId = req.session?.user?.user_id || res.locals?.user?.user_id;
-
     await removeVolunteer(userId, projectId);
 
     // Redirect back to the clean projects directory list view
@@ -277,7 +275,7 @@ async function handleRemoveVolunteer(req, res, next) {
     console.error("Error in handleRemoveVolunteer controller:", error);
     next(error);
   }
-}
+};
 
 // Render the edit project form pre-populated with data
 const showEditProjectPage = async (req, res, next) => {
@@ -337,4 +335,5 @@ export {
   getProjectsByVolunteer,
   showEditProjectPage,
   processUpdateProject,
+  projectValidation,
 };
