@@ -119,8 +119,8 @@ const showDashboard = async (req, res) => {
     // 3. Render the dashboard template view and pass all required variables
     res.render("dashboard", {
       title: "Dashboard",
-      name: user?.user_name || "Volunteer",
-      email: user?.user_email || "volunteer@test.com",
+      name: user?.name || "Volunteer",
+      email: user?.email || "volunteer@test.com",
       volunteeredProjects: volunteeredProjects,
     });
   } catch (error) {
