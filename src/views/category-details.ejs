@@ -1,0 +1,27 @@
+<%- include('./partials/header') %>
+
+<main>
+    <h1><%= category ? category.category_name : 'Category' %> Projects</h1>
+
+    <p>Below is the list of student projects associated with this field:</p>
+
+    <!-- Recorremos el arreglo usando las propiedades reales de tu base de datos -->
+    <% if (projects && projects.length > 0) { %>
+        <ul class="projects-list">
+            <% projects.forEach(project => { %>
+                <li>
+                    <!-- Cambiado project.project_name por project.title -->
+                    <a href="/project/<%= project.project_id %>"><%= project.title %></a>
+                    <!-- Cambiado project.project_description por project.description -->
+                    <p><%= project.description %></p>
+                </li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+        <p>No projects found in this category yet.</p>
+    <% } %>
+
+    <p><a href="/categories">Back to Categories List</a></p>
+</main>
+
+<%- include('./partials/footer') %>

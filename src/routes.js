@@ -43,6 +43,7 @@ import {
   processEditCategoryForm,
   showAssignCategoriesForm,
   processAssignCategoriesForm,
+  showCategoryDetailsPage,
 } from "./controllers/categories.js";
 
 import { testErrorPage } from "./controllers/errors.js";
@@ -51,6 +52,8 @@ const router = express.Router();
 
 router.get("/", showHomePage);
 router.get("/organizations", showOrganizationsPage);
+// Route to display a specific category's details page
+router.get("/category/:id", showCategoryDetailsPage);
 
 // Route to display a specific organization's details page
 router.get("/organization/:id", showOrganizationDetailsPage);

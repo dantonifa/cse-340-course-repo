@@ -5,6 +5,7 @@ import { body, validationResult } from "express-validator";
 import {
   getAllCategories,
   getCategoriesByServiceProjectId,
+  getProjectsByCategoryId,
   updateCategoryAssignments,
   getCategoryById,
   createCategory,
@@ -172,14 +173,60 @@ const processEditCategoryForm = async (req, res) => {
   }
 };
 
-// Export any controller functions
+// Display projects for a specific category
+// Get projects for a specific category ID and render details page
+const showCategoryDetailsPage = async (req, res) => {
+  try {
+    const categoryId = req.params.id;
+
+    // Fetch matching rows from database functions
+    const categoryRows = await getCategoryById(categoryId);
+    const projects = await getProjectsByCategoryId(categoryId);
+
+    // Add this line to print the exact database results into your terminal console
+    console.log(
+      "DATABASE CHECK -> ID:",
+      categoryId,
+      "PROJECTS ARRAY:",
+      projects,
+    );
+
+    // Extract the single category object from the postgres array response safely
+    const category =
+      categoryRows && categoryRows.length > 0 ? categoryRows[0] : null;
+
+    // If no matching category is found, trigger a 404 page error
+    if (!category) {
+      return res
+        .status(404)
+        .render("errors/404", { title: "Category Not Found" });
+    }
+
+    res.render("category-details", {
+      title: category
+        ? category.category_name + " Projects"
+        : "Category Projects",
+      category: category,
+      projects: projects,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).render("errors/500", {
+      title: "Server Error",
+      error: error.message,
+      stack: error.stack,
+    });
+  }
+};
+
 export {
   showCategoriesPage,
-  showAssignCategoriesForm,
-  processAssignCategoriesForm,
-  categoryValidation,
   showNewCategoryForm,
   processNewCategoryForm,
+  categoryValidation,
   showEditCategoryForm,
   processEditCategoryForm,
+  showAssignCategoriesForm,
+  processAssignCategoriesForm,
+  showCategoryDetailsPage,
 };

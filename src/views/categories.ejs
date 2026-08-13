@@ -1,25 +1,24 @@
 <%- include('./partials/header') %>
 
 <main>
-  <h1><%= title %></h1>
-    
-  <a href="/new-category">Create a New Category</a>
+    <h1><%= title %></h1>
 
-  <!-- Main Categories Content -->
-  <h2>Project Categories</h2>
-  <p>Browse student projects by academic field and discipline:</p>
+    <a href="/new-category">Create a New Category</a>
 
-  <ul class="categories-list">
-    <% categories.forEach(category => { %>
-        <li>
-            <%= category.category_name %> 
-            | <a href="/edit-category/<%= category.category_id %>">Edit</a>
-        </li>
-    <% }) %>
-</ul>
+    <!-- Main Categories Content -->
+    <h2>Project Categories</h2>
+    <p>Browse student projects by academic field and discipline:</p>
 
-
+    <ul class="categories-list">
+        <% categories.forEach(category => { %>
+            <li>
+                <!-- Category name points to its specific details view -->
+                <a href="/category/<%= category.category_id %>"><%= category.category_name %></a> | 
+                <!-- Edit link points to the management form -->
+                <a href="/edit-category/<%= category.category_id %>">Edit</a>
+            </li>
+        <% }) %>
+    </ul>
 </main>
 
 <%- include('./partials/footer') %>
-

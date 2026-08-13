@@ -45,17 +45,16 @@ const getAllCategories = async () => {
   }
 };
 
-// Function to get a single category by its ID
-const getCategoryById = async (id) => {
+// Fetch category meta details by its unique ID
+async function getCategoryById(category_id) {
   try {
     const sql = "SELECT * FROM public.categories WHERE category_id = $1";
-    const result = await pool.query(sql, [id]);
-    return result.rows[0]; // Returns just the single row object
+    const result = await pool.query(sql, [category_id]);
+    return result.rows; // Returns the rows array to the controller
   } catch (error) {
-    console.error("Error fetching category by ID:", error);
     throw error;
   }
-};
+}
 
 // Function to update an existing category name
 const updateCategory = async (id, name) => {
@@ -95,6 +94,22 @@ const createCategory = async (category_name) => {
   }
 };
 
+// Fetch all projects matching a specific category ID
+async function getProjectsByCategoryId(category_id) {
+  try {
+    const sql = `
+            SELECT p.* 
+            FROM public.service_projects p 
+            JOIN public.project_categories pc ON p.project_id = pc.project_id 
+            WHERE pc.category_id = $1
+        `;
+    const result = await pool.query(sql, [category_id]);
+    return result.rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export {
   assignCategoryToProject,
   updateCategoryAssignments,
@@ -103,4 +118,5 @@ export {
   updateCategory,
   getCategoriesByServiceProjectId,
   createCategory,
+  getProjectsByCategoryId,
 };
