@@ -4,16 +4,11 @@
     <% if (organizations && organizations.length > 0) { %>
       <% organizations.forEach(organization => { %>
         <div class="organization-card">
-          <!-- 1. Fix Name Variable -->
+          <!-- Render the respective logos for b_builders, harvest, u_serve, and for the other organizations use placeholder -->
           <h2><a href="/organization/<%= organization.organization_id %>"><%= organization.organization_name || organization.name %></a></h2>
-
-
-          <% if (organization.logo_filename) { %>
-            <img src="/images/<%= organization.logo_filename %>" alt="Logo">
-          <% } else { %>
-            <img src="/images/placeholder-logo.png" alt="Placeholder Logo">
-          <% } %>
-
+                        <img src="/images/<%= organization.logo_filename %>" 
+             onerror="this.onerror=null; this.src='/images/placeholder-logo.png';" 
+             alt="Logo of <%= organization.organization_name || organization.name %>">
           <p><%= organization.organization_description || organization.description %></p>
           <p><strong>Contact: </strong><%= organization.organization_email || organization.email || organization.contact_email %></p>
           <p><a href="/edit-organization/<%= organization.organization_id %>">Edit</a></p>
