@@ -50,10 +50,14 @@ app.use(flash);
 
 // Middleware to pass flash messages to all EJS views locally
 app.use((req, res, next) => {
-  res.locals.messages = req.flash(); // Extracts and clears flash messages automatically
+  const flashMessages = req.flash();
+  res.locals.messages = flashMessages;
+  res.locals.notice =
+    flashMessages.notice && flashMessages.notice.length > 0
+      ? flashMessages.notice[0]
+      : null;
   next();
 });
-
 // Middleware to log all incoming requests
 app.use((req, res, next) => {
   if (NODE_ENV === "development") {

@@ -253,6 +253,8 @@ const handleAddVolunteer = async (req, res, next) => {
 
     await addVolunteer(userId, projectId);
 
+    req.flash("notice", "You have successfully volunteered for this project!");
+
     // Redirect back to the clean projects directory list view
     res.redirect("/projects/" + projectId);
   } catch (error) {
@@ -268,6 +270,8 @@ const handleRemoveVolunteer = async (req, res, next) => {
     const projectId = req.params.projectId;
     const userId = req.session?.user?.user_id || res.locals?.user?.user_id;
     await removeVolunteer(userId, projectId);
+
+    req.flash("notice", "You have been removed from this project.");
 
     // Redirect back to the clean projects directory list view
     res.redirect("/dashboard");

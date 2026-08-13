@@ -197,3 +197,20 @@ textarea {
   border-top: 1px solid #f1f5f9;
   padding-top: 12px;
 }
+
+/* Flash Messages Styling */
+.flash-message {
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Notice / Success Message Type */
+.flash-message.notice {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}   
