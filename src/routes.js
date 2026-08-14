@@ -59,10 +59,20 @@ router.get("/category/:id", showCategoryDetailsPage);
 router.get("/organization/:id", showOrganizationDetailsPage);
 
 // Route for new organization page
-router.get("/new-organization", showNewOrganizationForm);
+router.get(
+  "/new-organization",
+  requireLogin,
+  requireRole("admin"),
+  showNewOrganizationForm,
+);
 
 // Route for edit organization page
-router.get("/edit-organization/:id", showEditOrganizationForm);
+router.get(
+  "/edit-organization/:id",
+  requireLogin,
+  requireRole("admin"),
+  showEditOrganizationForm,
+);
 
 /*Create a new route for /project/[id] that will handle requests for the service project details page
  for a single service project as specified by the [id] parameter. This route should use the new
@@ -107,11 +117,35 @@ router.post(
   "/project/:projectId/assign-categories",
   processAssignCategoriesForm,
 );
-router.post("/edit-organization/:id", processEditOrganizationForm);
+
+// Post route to process organization edits
+router.post(
+  "/edit-organization/:id",
+  requireLogin,
+  requireRole("admin"),
+  processEditOrganizationForm,
+);
+
 router.get("/organizations/:id", showOrganizationDetailsPage);
 router.get("/projects", showProjectsPage);
-router.get("/new-project", showNewProjectForm);
-router.post("/new-project", projectValidation, processNewProjectForm);
+
+// Route to display the new project form
+router.get(
+  "/new-project",
+  requireLogin,
+  requireRole("admin"),
+  showNewProjectForm,
+);
+
+// Post route to process new project creation
+router.post(
+  "/new-project",
+  requireLogin,
+  requireRole("admin"),
+  projectValidation,
+  processNewProjectForm,
+);
+
 router.get("/categories", showCategoriesPage);
 
 /*Add a GET route for /project/:projectId/assign-categories that calls the 

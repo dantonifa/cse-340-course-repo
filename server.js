@@ -68,14 +68,15 @@ app.use((req, res, next) => {
 
 // Middleware to make NODE_ENV available to all templates
 //Add code to this function to set a new variable res.locals.isLoggedIn
-// that is true if req.session.user exists, otherwise false.
+// Middleware to check login status and pass user data to all templates
 app.use((req, res, next) => {
   res.locals.isLoggedIn = false;
+  res.locals.user = null; // Set default to null if not logged in
+
   if (req.session && req.session.user) {
     res.locals.isLoggedIn = true;
+    res.locals.user = req.session.user; // Pass the full user object (including role_id)
   }
-
-  res.locals.NODE_ENV = NODE_ENV;
   next();
 });
 

@@ -11,7 +11,9 @@
              alt="Logo of <%= organization.organization_name || organization.name %>">
           <p><%= organization.organization_description || organization.description %></p>
           <p><strong>Contact: </strong><%= organization.organization_email || organization.email || organization.contact_email %></p>
-          <p><a href="/edit-organization/<%= organization.organization_id %>">Edit</a></p>
+            <% if (user && user.role_id === 2) { %>
+              <p><a href="/edit-organization/<%= organization.organization_id %>">Edit</a></p>
+            <% } %>
 
         </div>
       <% }) %>
@@ -21,7 +23,15 @@
   </div>
 
   <!-- Add a link to the new organization form -->
-  <p><a href="/new-organization">Add a new organization</a></p>
+  <!-- Only administrators can see the add organization button -->
+  <!-- Only administrators can see the add organization button -->
+  <!-- Only administrators can see the add organization button -->
+    <% if (user && user.role_id === 2) { %>
+        <p><a href="/new-organization">Add a new organization</a></p>
+    <% } %>
+
+
+
 </main>
 <%- include('partials/footer') %>
 
