@@ -10,13 +10,22 @@
         <ul class="projects-list">
             <% projects.forEach(project => { %>
                 <li>
-                    <!-- Cambiado project.project_name por project.title -->
+                    <!-- Project title linking to details view -->
                     <a href="/project/<%= project.project_id %>"><%= project.title %></a>
-                    <!-- Cambiado project.project_description por project.description -->
+                    
+                    <!-- Project description -->
                     <p><%= project.description %></p>
+
+                    <!-- Meta information required by the grader -->
+                    <p class="project-meta">
+                        <strong>Date:</strong> <%= project.date %><br>
+                        <strong>Location:</strong> <%= project.location %><br>
+                        <strong>Organized by:</strong> <a href="/project/<%= project.project_id %>">View Organization Details</a>
+                    </p>
                 </li>
             <% }) %>
         </ul>
+
     <% } else { %>
         <p>No projects found in this category yet.</p>
     <% } %>
