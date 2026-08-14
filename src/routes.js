@@ -49,6 +49,20 @@ import {
 import { testErrorPage } from "./controllers/errors.js";
 
 const router = express.Router();
+router.get(
+  "/categories/new",
+  requireLogin,
+  requireRole("admin"),
+  showNewCategoryForm,
+);
+
+router.post(
+  "/categories",
+  requireLogin,
+  requireRole("admin"),
+  categoryValidation,
+  processNewCategoryForm,
+);
 
 router.get("/", showHomePage);
 router.get("/organizations", showOrganizationsPage);

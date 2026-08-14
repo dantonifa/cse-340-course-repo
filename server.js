@@ -48,16 +48,21 @@ app.use(
 // Use flash message middleware
 app.use(flash);
 
-// Middleware to pass flash messages to all EJS views locally
+// Middleware to pass flash messages and user session to all EJS views locally
 app.use((req, res, next) => {
   const flashMessages = req.flash();
   res.locals.messages = flashMessages;
   res.locals.notice =
     flashMessages.notice && flashMessages.notice.length > 0
-      ? flashMessages.notice[0]
+      ? flashMessages.notice
       : null;
+
+  // Pass the user session data globally to all templates
+  res.locals.user = req.session.user || null;
+
   next();
 });
+
 // Middleware to log all incoming requests
 app.use((req, res, next) => {
   if (NODE_ENV === "development") {
