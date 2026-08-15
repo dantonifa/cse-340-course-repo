@@ -140,6 +140,22 @@ router.post(
   processEditOrganizationForm,
 );
 
+// Route to display the edit project form
+router.get(
+  "/projects/edit/:projectId",
+  requireLogin,
+  requireRole("admin"),
+  showEditProjectForm,
+);
+
+// Route to process the project edits (Matches line 10 of your EJS form)
+router.post(
+  "/projects/edit/:projectId",
+  requireLogin,
+  requireRole("admin"),
+  processEditProjectForm,
+);
+
 router.get("/organizations/:id", showOrganizationDetailsPage);
 router.get("/projects", showProjectsPage);
 
